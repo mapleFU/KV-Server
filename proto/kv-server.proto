@@ -1,0 +1,41 @@
+// proto/kv-server.proto folder for kv server
+
+syntax = "proto3";
+
+package kvstore.methods;
+
+service KVService {
+    rpc Get(Key) returns (Value) {}
+    rpc Set(KVPair) returns (OperationOK) {}
+    rpc Delete(Key) returns (OperationOK) {}
+    rpc Scan(ScanArgs) returns (Values) {}
+}
+
+message Value {
+    bytes values = 1;
+}
+
+message Values {
+    repeated Value values = 1;
+}
+
+message Key {
+    string Key = 1;
+}
+
+message KVPair {
+    Key key = 1;
+    Value value = 2;
+}
+
+// whether the operation is ok
+message OperationOK {
+    bool ok = 1;
+}
+
+// the args of scan
+message ScanArgs {
+    int32 cursor = 1;   // scan cursor
+    Key match = 2;      // the key to match
+    int32 count = 3;    // the value to count
+}
