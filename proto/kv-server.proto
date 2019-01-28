@@ -4,7 +4,7 @@ syntax = "proto3";
 
 package kvstore.methods;
 
-service KVService {
+service KVServicer {
     rpc Get(Key) returns (Value) {}
     rpc Set(KVPair) returns (OperationOK) {}
     rpc Delete(Key) returns (OperationOK) {}
