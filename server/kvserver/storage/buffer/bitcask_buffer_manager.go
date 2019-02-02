@@ -65,6 +65,7 @@ func (poolManager *BitcaskPoolManager) AppendRecord(data []byte) (uint32, uint32
 	poolManager.fileLength += int64(n)
 
 	if err != nil {
+		log.Infoln("write failed")
 		return 0, 0, 0, 0, err
 	}
 

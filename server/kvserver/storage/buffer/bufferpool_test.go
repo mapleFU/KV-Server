@@ -42,11 +42,13 @@ type testEntry struct {
 func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 	testDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testAppend"
 	bufPool, err := Open(testDir)
+	defer bufPool.Close()
 	if err != nil {
 		t.Fatal(err)
 	}
 	var wg sync.WaitGroup
 
+	var arrMux sync.Mutex
 	dataArray := make([]testEntry, 100)
 	for i := 0; i < 100; i++ {
 		key := []byte(fmt.Sprintf("key-%d", i))
@@ -58,6 +60,11 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 
 			v1, v2, v3, v4, err := bufPool.AppendRecord(datas)
 			if err != nil {
+				t.Fatal(err)
+
+			} else {
+				arrMux.Lock()
+				defer arrMux.Unlock()
 				dataArray[index] = testEntry{
 					v1, v2, v3, v4,
 				}
@@ -78,7 +85,7 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 				t.Fatal("key error")
 			}
 			if strings.Compare(string(value), fmt.Sprintf("value-%d", i)) != 0 {
-				t.Fatal("key error")
+				t.Fatal("value error")
 			}
 		} else {
 			log.Infof("Value in %d pos is zero, write failed", i)
