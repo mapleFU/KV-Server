@@ -12,12 +12,12 @@ func TestEncodeDecode(t *testing.T)  {
 
 	currentTime := time.Now()
 
-	encodeResult := persistEncoding(key, value, currentTime)
+	encodeResult := PersistEncoding(key, value, currentTime)
 	if len(encodeResult) != PersistHeaderSize + len(key) + len(value) {
 		t.Fatal("Length of persist encoding error")
 	}
 
-	key2, value2, _ := persistDecoding(encodeResult)
+	key2, value2, _ := PersistDecoding(encodeResult)
 	if bytes.Compare(key, key2) != 0 {
 		t.Fatal("key marshall or unmarshall error")
 	}

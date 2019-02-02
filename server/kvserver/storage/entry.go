@@ -19,7 +19,7 @@ type entry struct {
 /**
 return entry with current time
  */
-func createEntryInCurrentTime(file uint32, valueSize uint32, valuePos uint32) *entry {
+func CreateEntryInCurrentTime(file uint32, valueSize uint32, valuePos uint32) *entry {
 	currentTime := time.Now()
 	return &entry{
 		fileID:file,

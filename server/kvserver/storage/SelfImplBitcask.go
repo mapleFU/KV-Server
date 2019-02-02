@@ -19,8 +19,9 @@ type MyBitcask struct {
 	mu sync.RWMutex
 }
 
-func Open(dirName string)  {
-
+func OpenBitcask(dirName string) *MyBitcask  {
+	panic("implement me")
+	return nil
 }
 
 func (*MyBitcask) Close() {
@@ -32,17 +33,19 @@ func (*MyBitcask) Scan(cursor ScanCursor) ([][]byte, error) {
 }
 
 func (bitcask *MyBitcask) Get(key []byte) ([]byte, error) {
-	entry, exists := bitcask.entryMap.getEntry(string(key))
-	if exists {
-
-	}
+	//entry, exists := bitcask.entryMap.getEntry(string(key))
+	//if exists {
+	//
+	//}
+	panic("impl me!")
+	return nil, nil
 }
 
 /**
 write disk -- write hashmap
  */
 func (*MyBitcask) Put([]byte, []byte) error {
-
+	panic("imple me")
 }
 
 /**

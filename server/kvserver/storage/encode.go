@@ -30,7 +30,7 @@ type bitcaskStoreHeader struct {
 
 const PersistHeaderSize  = 32 / 8 + 32 / 8 + 32 / 8 + 32 / 8
 
-func persistEncoding(key []byte, value []byte, timeStamp time.Time) []byte {
+func PersistEncoding(key []byte, value []byte, timeStamp time.Time) []byte {
 	crc := crc32.ChecksumIEEE(value)
 
 	keySize := uint32(len(key))
@@ -69,7 +69,7 @@ func persistEncoding(key []byte, value []byte, timeStamp time.Time) []byte {
 	return buf
 }
 
-func persistDecoding(data []byte) ([]byte, []byte, time.Time) {
+func PersistDecoding(data []byte) ([]byte, []byte, time.Time) {
 	header := bitcaskStoreHeader{}
 	//fmt.Printf("%d -- %d\n", PersistHeaderSize, unsafe.Sizeof(bitcaskStoreHeader{}))
 
