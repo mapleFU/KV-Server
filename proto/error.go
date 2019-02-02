@@ -1,9 +1,9 @@
 package kvstore_methods
 
 type UnexistsError struct {
-	key string
+	Key string
 }
 
 func (err *UnexistsError) Error() string {
-	return "Not exists " + err.key
+	return "Not exists " + err.Key
 }

@@ -33,12 +33,12 @@ func (s *KVService) Get(ctx context.Context, req *pb.Key) (*pb.Value, error) {
 
 func (s *KVService) Set(ctx context.Context, req *pb.KVPair) (*pb.OperationOK, error) {
 	log.Infoln("Set")
-	return &pb.OperationOK{Ok:true}, s.bitcask.Set([]byte(req.Key.Key), req.Value.Values)
+	return &pb.OperationOK{Ok:true}, s.bitcask.Put([]byte(req.Key.Key), req.Value.Values)
 }
 
 func (s *KVService) Delete(ctx context.Context, req *pb.Key) (*pb.OperationOK, error)  {
 	log.Infoln("Delete")
-	err := s.bitcask.Delete([]byte(req.Key))
+	err := s.bitcask.Del([]byte(req.Key))
 	ok := true
 	if err != nil {
 		ok = false

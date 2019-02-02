@@ -13,18 +13,19 @@ type entry struct {
 	fileID uint32
 	valueSize uint32
 	valuePos uint32
-	timestamp time.Time
+	timestamp uint32
 }
 
 /**
 return entry with current time
+just use for test...
  */
 func CreateEntryInCurrentTime(file uint32, valueSize uint32, valuePos uint32) *entry {
-	currentTime := time.Now()
+	currentTime := time.Now().UnixNano()
 	return &entry{
 		fileID:file,
 		valueSize:valueSize,
 		valuePos: valuePos,
-		timestamp: currentTime,
+		timestamp: uint32(currentTime),
 	}
 }
