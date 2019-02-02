@@ -80,6 +80,7 @@ func NewKVService() *KVService {
 
 func NewKVServiceWithDir(dirName string) *KVService {
 	bc := storage.Open(dirName)
+
 	//if err != nil {
 	//	log.Fatal(err)
 	//}

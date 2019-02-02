@@ -3,6 +3,12 @@ package storage
 // entry map to store entry records
 type entryMap map[string]*entry
 
+func newEntryMap() *entryMap {
+	newMap := make(map[string]*entry)
+	var retMap entryMap
+	retMap = entryMap(newMap)
+	return &retMap
+}
 /**
 reflesh record
  */

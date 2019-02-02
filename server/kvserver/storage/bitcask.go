@@ -29,6 +29,8 @@ type Bitcask struct {
 
 func Open(dirName string) *Bitcask  {
 	bitcask := Bitcask{}
+
+	bitcask.entryMap = *newEntryMap()
 	bitcask.directoryName = dirName
 	bc, err := buffer.Open(dirName)
 	if err != nil {
@@ -36,7 +38,7 @@ func Open(dirName string) *Bitcask  {
 	}
 	bitcask.bitcaskPoolManager = bc
 
-	return nil
+	return &bitcask
 }
 
 func (bitcask *Bitcask) Close() {
