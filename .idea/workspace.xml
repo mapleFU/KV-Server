@@ -2,8 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="31d6b0cd-37c1-4745-80b8-fa343a2f07cd" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/bitcask.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/proto/error.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/SelfImplBitcask.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/buffer/bitcask_buffer_manager.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/buffer/bitcask_interface.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/buffer/bufferpool_test.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/encode.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/encode_test.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/entry.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/hashmap.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/kvserver/storage/storage.go" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/server/testdata/0.data" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/client/basic_kv_test.go" afterPath="$PROJECT_DIR$/client/basic_kv_test.go" />
+      <change beforePath="$PROJECT_DIR$/server/kvserver/kv-server.go" afterPath="$PROJECT_DIR$/server/kvserver/kv-server.go" />
+      <change beforePath="$PROJECT_DIR$/server/kvserver/storage/bitcask.go" afterPath="$PROJECT_DIR$/server/kvserver/storage/bitcask.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,55 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="kv-server.proto" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/proto/kv-server.proto">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="18" lean-forward="false" selection-start-line="6" selection-start-column="18" selection-end-line="6" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="kv-server.pb.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/proto/kv-server.pb.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="292" column="0" lean-forward="false" selection-start-line="292" selection-start-column="0" selection-end-line="292" selection-end-column="0" />
-              <folding>
-                <element signature="e#108#251#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/main.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-              <folding>
-                <element signature="e#14#222#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="kv-server.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/kvserver/kv-server.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="59">
-              <caret line="6" column="35" lean-forward="false" selection-start-line="6" selection-start-column="35" selection-end-line="6" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="bitcask.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="bitcask.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/kvserver/storage/bitcask.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="409">
-              <caret line="35" column="4" lean-forward="true" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="4" />
+            <state relative-caret-position="205">
+              <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
               <folding>
                 <element signature="e#17#95#0" expanded="true" />
               </folding>
@@ -70,45 +40,100 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="client.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client/client.go">
+      <file leaf-file-name="SelfImplBitcask.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/kvserver/storage/SelfImplBitcask.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="40">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="66">
+              <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+              <folding>
+                <element signature="e#17#41#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="basic_kv_test.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client/basic_kv_test.go">
+      <file leaf-file-name="bitcask_buffer_manager.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/kvserver/storage/buffer/bitcask_buffer_manager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-607">
-              <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-              <folding />
+            <state relative-caret-position="-305">
+              <caret line="25" column="4" lean-forward="false" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
+              <folding>
+                <element signature="e#16#81#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="0">
-                <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor />
+      <file leaf-file-name="bufferpool_test.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/kvserver/storage/buffer/bufferpool_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <folding>
+                <element signature="e#16#71#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
+      <file leaf-file-name="bitcask.lock" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/data/bitcask.lock">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bitcask_interface.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/kvserver/storage/buffer/bitcask_interface.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="140">
+              <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="error.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/proto/error.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="160">
+              <caret line="8" column="1" lean-forward="true" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="storage.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/kvserver/storage/storage.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="3" column="17" lean-forward="false" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="176">
+              <caret line="16" column="17" lean-forward="false" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="encode.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/kvserver/storage/encode.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="19" column="7" lean-forward="false" selection-start-line="19" selection-start-column="7" selection-end-line="19" selection-end-column="7" />
+              <folding>
+                <element signature="e#17#113#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -134,16 +159,29 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/go.mod" />
         <option value="$PROJECT_DIR$/proto/kv-server.proto" />
         <option value="$PROJECT_DIR$/client/client.go" />
         <option value="$PROJECT_DIR$/client/main.go" />
         <option value="$PROJECT_DIR$/client/test_basic_kv.go" />
-        <option value="$PROJECT_DIR$/client/basic_kv_test.go" />
-        <option value="$PROJECT_DIR$/server/kvserver/kv-server.go" />
         <option value="$PROJECT_DIR$/server/main.go" />
+        <option value="$PROJECT_DIR$/client/basic_kv_test.go" />
         <option value="$PROJECT_DIR$/server/kvserver/storage/bitcask.go" />
+        <option value="$PROJECT_DIR$/proto/kv-server2/kv-server.proto" />
+        <option value="$PROJECT_DIR$/server/kvserver/kv-server.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/entry.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/storage.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/persistence.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/encode_test.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/hashmap.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/error.go" />
+        <option value="$PROJECT_DIR$/proto/error.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/SelfImplBitcask.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/buffer/bitcask_interface.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/encode.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/buffer/bufferpool_test.go" />
+        <option value="$PROJECT_DIR$/server/kvserver/storage/buffer/bitcask_buffer_manager.go" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -154,8 +192,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="x" value="50" />
+    <option name="y" value="125" />
     <option name="width" value="1440" />
-    <option name="height" value="900" />
+    <option name="height" value="873" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -173,7 +213,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -200,14 +239,7 @@
               <item name="KV-Server" type="b2602c69:ProjectViewProjectNode" />
               <item name="KV-Server" type="462c0819:PsiDirectoryNode" />
               <item name="server" type="462c0819:PsiDirectoryNode" />
-              <item name="kvserver" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="KV-Server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="KV-Server" type="462c0819:PsiDirectoryNode" />
-              <item name="server" type="462c0819:PsiDirectoryNode" />
-              <item name="kvserver" type="462c0819:PsiDirectoryNode" />
-              <item name="storage" type="462c0819:PsiDirectoryNode" />
+              <item name="testdata" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="KV-Server" type="b2602c69:ProjectViewProjectNode" />
@@ -217,6 +249,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -228,9 +261,10 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/server/kvserver/storage" />
+      <recent name="$PROJECT_DIR$/proto" />
       <recent name="$PROJECT_DIR$/client" />
       <recent name="$PROJECT_DIR$/client/client" />
-      <recent name="$PROJECT_DIR$/proto" />
       <recent name="$PROJECT_DIR$/server" />
     </key>
   </component>
@@ -246,7 +280,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Test.TestBasicKVScan in basic_kv_test.go">
+  <component name="RunManager" selected="Go Test.TestOpen in bufferpool_test.go">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="KV-Server" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -255,15 +289,6 @@
       <filePath value="$PROJECT_DIR$/server/main.go" />
       <package value="github.com/mapleFU/KV-Server" />
       <directory value="$PROJECT_DIR$/" />
-    </configuration>
-    <configuration name="TestBasicKV in basic_kv_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true">
-      <module name="KV-Server" />
-      <working_directory value="$PROJECT_DIR$/client" />
-      <go_parameters value="-i" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="github.com/mapleFU/KV-Server/client" />
-      <pattern value="^TestBasicKV$" />
     </configuration>
     <configuration name="TestBasicKVDelete in basic_kv_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true">
       <module name="KV-Server" />
@@ -274,15 +299,6 @@
       <package value="github.com/mapleFU/KV-Server/client" />
       <pattern value="^TestBasicKVDelete$" />
     </configuration>
-    <configuration name="TestBasicKVGetNil in basic_kv_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true">
-      <module name="KV-Server" />
-      <working_directory value="$PROJECT_DIR$/client" />
-      <go_parameters value="-i" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="github.com/mapleFU/KV-Server/client" />
-      <pattern value="^TestBasicKVGetNil$" />
-    </configuration>
     <configuration name="TestBasicKVScan in basic_kv_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true">
       <module name="KV-Server" />
       <working_directory value="$PROJECT_DIR$/client" />
@@ -292,20 +308,38 @@
       <package value="github.com/mapleFU/KV-Server/client" />
       <pattern value="^TestBasicKVScan$" />
     </configuration>
+    <configuration name="TestEncodeDecode in encode_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true">
+      <module name="KV-Server" />
+      <working_directory value="$PROJECT_DIR$/server/kvserver/storage" />
+      <go_parameters value="-i" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/mapleFU/KV-Server/server/kvserver/storage" />
+      <pattern value="^TestEncodeDecode$" />
+    </configuration>
+    <configuration name="TestOpen in bufferpool_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true">
+      <module name="KV-Server" />
+      <working_directory value="$PROJECT_DIR$/server/kvserver/storage/buffer" />
+      <go_parameters value="-i" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/mapleFU/KV-Server/server/kvserver/storage/buffer" />
+      <pattern value="^TestOpen$" />
+    </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Go Build.go build main.go" />
-      <item index="1" class="java.lang.String" itemvalue="Go Test.TestBasicKV in basic_kv_test.go" />
-      <item index="2" class="java.lang.String" itemvalue="Go Test.TestBasicKVGetNil in basic_kv_test.go" />
-      <item index="3" class="java.lang.String" itemvalue="Go Test.TestBasicKVDelete in basic_kv_test.go" />
-      <item index="4" class="java.lang.String" itemvalue="Go Test.TestBasicKVScan in basic_kv_test.go" />
+      <item index="1" class="java.lang.String" itemvalue="Go Test.TestBasicKVDelete in basic_kv_test.go" />
+      <item index="2" class="java.lang.String" itemvalue="Go Test.TestBasicKVScan in basic_kv_test.go" />
+      <item index="3" class="java.lang.String" itemvalue="Go Test.TestEncodeDecode in encode_test.go" />
+      <item index="4" class="java.lang.String" itemvalue="Go Test.TestOpen in bufferpool_test.go" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Go Test.TestBasicKVScan in basic_kv_test.go" />
-        <item index="1" class="java.lang.String" itemvalue="Go Build.go build main.go" />
-        <item index="2" class="java.lang.String" itemvalue="Go Test.TestBasicKVDelete in basic_kv_test.go" />
-        <item index="3" class="java.lang.String" itemvalue="Go Test.TestBasicKVGetNil in basic_kv_test.go" />
-        <item index="4" class="java.lang.String" itemvalue="Go Test.TestBasicKV in basic_kv_test.go" />
+        <item index="0" class="java.lang.String" itemvalue="Go Test.TestOpen in bufferpool_test.go" />
+        <item index="1" class="java.lang.String" itemvalue="Go Test.TestEncodeDecode in encode_test.go" />
+        <item index="2" class="java.lang.String" itemvalue="Go Build.go build main.go" />
+        <item index="3" class="java.lang.String" itemvalue="Go Test.TestBasicKVDelete in basic_kv_test.go" />
+        <item index="4" class="java.lang.String" itemvalue="Go Test.TestBasicKVScan in basic_kv_test.go" />
       </list>
     </recent_temporary>
   </component>
@@ -313,52 +347,51 @@
     <option name="remove_strategy" value="false" />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 53m 20s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 03m 48s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 55m 08s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 03m 58s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 55m 12s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 05m 06s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 55m 18s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 05m 28s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 55m 24s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 05m 58s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 55m 31s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 06m 51s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 56m 06s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 07m 25s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 56m 25s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 07m 39s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 56m 52s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 07m 48s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestBasicKVScan_in_basic_kv_test_go - 2019.01.29 at 15h 57m 18s.xml">
-      <configuration name="TestBasicKVScan in basic_kv_test.go" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestOpen_in_bufferpool_test_go - 2019.02.02 at 22h 07m 58s.xml">
+      <configuration name="TestOpen in bufferpool_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26037195" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2639485" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.45024875" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4216418" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36567163" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36567163" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39925373" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -375,7 +408,16 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/server/kvserver/storage/buffer/bufferpool_test.go</url>
+          <line>9</line>
+          <properties />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="1" />
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
@@ -389,10 +431,95 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/proto/kv-server.pb.go">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5840">
+          <caret line="292" column="0" lean-forward="false" selection-start-line="292" selection-start-column="0" selection-end-line="292" selection-end-column="0" />
+          <folding>
+            <element signature="e#108#251#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#222#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/kv-server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="6" column="35" lean-forward="false" selection-start-line="6" selection-start-column="35" selection-end-line="6" selection-end-column="35" />
+          <folding>
+            <element signature="e#18#184#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/bitcask.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding>
+            <element signature="e#17#95#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/basic_kv_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+          <folding>
+            <element signature="e#16#188#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proto/kv-server.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proto/kv-server.pb.go">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5860">
           <caret line="293" column="28" lean-forward="false" selection-start-line="293" selection-start-column="28" selection-end-line="293" selection-end-column="28" />
           <folding>
-            <element signature="e#108#251#0" expanded="true" />
+            <element signature="e#108#251#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -402,7 +529,7 @@
         <state relative-caret-position="200">
           <caret line="17" column="1" lean-forward="false" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
           <folding>
-            <element signature="e#14#222#0" expanded="true" />
+            <element signature="e#14#222#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -419,7 +546,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
           <caret line="14" column="29" lean-forward="false" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
-          <folding />
+          <folding>
+            <element signature="e#16#188#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -508,20 +637,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/proto/kv-server.pb.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5720">
+          <caret line="292" column="0" lean-forward="false" selection-start-line="292" selection-start-column="0" selection-end-line="292" selection-end-column="0" />
+          <folding>
+            <element signature="e#108#251#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file:///usr/local/Cellar/go/1.11/libexec/src/testing/testing.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="826" column="0" lean-forward="false" selection-start-line="826" selection-start-column="0" selection-end-line="826" selection-end-column="0" />
+        <state relative-caret-position="131">
+          <caret line="791" column="0" lean-forward="false" selection-start-line="791" selection-start-column="0" selection-end-line="791" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proto/kv-server.pb.go">
+    <entry file="file:///usr/local/Cellar/go/1.11/libexec/src/runtime/panic.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="292" column="0" lean-forward="false" selection-start-line="292" selection-start-column="0" selection-end-line="292" selection-end-column="0" />
+        <state relative-caret-position="131">
+          <caret line="512" column="0" lean-forward="false" selection-start-line="512" selection-start-column="0" selection-end-line="512" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="477">
+          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
           <folding>
-            <element signature="e#108#251#0" expanded="true" />
+            <element signature="e#14#222#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/basic_kv_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="35">
+          <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+          <folding>
+            <element signature="e#16#188#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -534,23 +691,97 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/basic_kv_test.go">
+    <entry file="file://$PROJECT_DIR$/proto/kv-server2/kv-server.proto">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-607">
-          <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+        <state relative-caret-position="540">
+          <caret line="27" column="29" lean-forward="false" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/proto/kv-server.proto">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="18" lean-forward="false" selection-start-line="6" selection-start-column="18" selection-end-line="6" selection-end-column="18" />
+        <state relative-caret-position="579">
+          <caret line="30" column="26" lean-forward="false" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/server/data/1549051830.hint">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="3" column="48" lean-forward="true" selection-start-line="3" selection-start-column="48" selection-end-line="3" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/kv-server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding>
+            <element signature="e#18#184#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/go/1.11/libexec/src/encoding/binary/binary.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="247" column="0" lean-forward="false" selection-start-line="247" selection-start-column="0" selection-end-line="247" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/encode_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#17#55#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/entry.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="37" />
+          <folding>
+            <element signature="e#156#169#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/hashmap.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="41" column="20" lean-forward="false" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/encode.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="19" column="7" lean-forward="false" selection-start-line="19" selection-start-column="7" selection-end-line="19" selection-end-column="7" />
+          <folding>
+            <element signature="e#17#113#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/bitcask.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding>
+            <element signature="e#17#95#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/data/bitcask.lock">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -558,31 +789,65 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/main.go">
+    <entry file="file://$PROJECT_DIR$/proto/error.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-          <folding>
-            <element signature="e#14#222#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/kvserver/kv-server.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="59">
-          <caret line="6" column="35" lean-forward="false" selection-start-line="6" selection-start-column="35" selection-end-line="6" selection-end-column="35" />
+        <state relative-caret-position="160">
+          <caret line="8" column="1" lean-forward="true" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/bitcask.go">
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/storage.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="35" column="4" lean-forward="true" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="4" />
+        <state relative-caret-position="60">
+          <caret line="3" column="17" lean-forward="false" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/buffer/bitcask_interface.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/buffer/bufferpool_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding>
-            <element signature="e#17#95#0" expanded="true" />
+            <element signature="e#16#71#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/buffer/bitcask_buffer_manager.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-305">
+          <caret line="25" column="4" lean-forward="false" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
+          <folding>
+            <element signature="e#16#81#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/kvserver/storage/SelfImplBitcask.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding>
+            <element signature="e#17#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="16" column="17" lean-forward="false" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>

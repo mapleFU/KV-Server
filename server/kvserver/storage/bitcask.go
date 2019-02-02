@@ -10,6 +10,7 @@ type Bitcask struct {
 }
 
 func Open(dirName string) *Bitcask {
+
 	bc, err := bitcask.Open(dirName, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -33,7 +34,7 @@ func (bc *Bitcask) Set(key []byte, value []byte) error {
 }
 
 func (bc *Bitcask) Scan()  {
-
+	panic("impl me!")
 }
 
 func (bc *Bitcask) Delete(key []byte) error {

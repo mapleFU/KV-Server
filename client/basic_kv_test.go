@@ -2,12 +2,12 @@ package client
 
 import (
 	"google.golang.org/grpc"
-	"log"
 	pb "github.com/mapleFU/KV-Server/proto"
 	"golang.org/x/net/context"
 	"testing"
 	"strings"
 	"strconv"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -54,12 +54,12 @@ func TestBasicKVGetNil(t* testing.T)  {
 	}
 	defer conn.Close()
 	c := pb.NewKVServicerClient(conn)
-	resp, err := c.Get(context.Background(), &pb.Key{Key:"non-exists"})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(resp.Values) > 0 {
-		t.Fatalf("Length of resp.Values > 0, get not nil.")
+	_, err = c.Get(context.Background(), &pb.Key{Key:"non-exists"})
+	if err == nil {
+		// resp 没有意义？
+		t.Fatal("Get an unexists value without err.")
+	} else {
+		log.Infoln(err)
 	}
 }
 
@@ -74,12 +74,9 @@ func TestBasicKVDelete(t *testing.T)  {
 	c.Set(context.Background(), &pb.KVPair{Key:&pb.Key{Key:"non-exists"}, Value:&pb.Value{Values:testValue}})
 	c.Delete(context.Background(), &pb.Key{Key:"non-exists"})
 
-	resp, err := c.Get(context.Background(), &pb.Key{Key:"non-exists"})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(resp.Values) > 0 {
-		t.Fatalf("Length of resp.Values > 0, get not nil.")
+	_, err = c.Get(context.Background(), &pb.Key{Key:"non-exists"})
+	if err == nil {
+		t.Fatal("Get an unexists value without err.")
 	}
 }
 
