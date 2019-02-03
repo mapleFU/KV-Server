@@ -48,8 +48,8 @@ func (scanMap *scanMap) flushRecord(key string, entry *entry) error {
 	return scanMap.table.Put(hashKey(key), entry)
 }
 
-func (scanMap *scanMap) Size() int {
-	return scanMap.table.Size()
+func (scanMap *scanMap) BucketSize() int {
+	return scanMap.table.BucketSize()
 }
 
 
@@ -61,8 +61,8 @@ func (scanMap *scanMap) scan(cursor ScanCursor) ([]*entry, *ScanCursor, error) {
 	panic("implement me")
 }
 
-func (scanMap *scanMap) bucket(int int) ([]interface{}, error) {
-	return scanMap.table.GetBucketIndexes(int)
+func (scanMap *scanMap) bucket(cursor int) ([]interface{}, error) {
+	return scanMap.table.GetBucketIndexes(cursor)
 }
 
 func (scanMap *scanMap) deleteRecord(key string) {

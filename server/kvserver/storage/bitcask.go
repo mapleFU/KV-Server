@@ -9,6 +9,7 @@ import (
 	"time"
 	"github.com/mapleFU/KV-Server/proto"
 	"regexp"
+
 )
 
 var emptyBytes []byte
@@ -60,6 +61,9 @@ func (bitcask *Bitcask) Scan(cursor ScanCursor) ([][]byte, int, error) {
 			Value:cursor.Cursor,
 		}
 	}
+	if cursor.Count <= 0 {
+		cursor.Count = 10
+	}
 
 	if cursor.UseMatchKey {
 		reg, err := regexp.Compile(cursor.MatchKeyString)
@@ -76,38 +80,52 @@ func (bitcask *Bitcask) Scan(cursor ScanCursor) ([][]byte, int, error) {
 	}
 
 	currentCursor := cursor.Cursor
-	cursorSize := bitcask.entryMap.Size()
+	cursorSize := bitcask.entryMap.BucketSize()
 	var lastAdd int = 0
+	//buckets := bitcask.entryMap.table.ListBuckets()
+	//for k, v := range buckets {
+	//	fmt.Printf("number %d(%d)\n", k, v)
+	//}
+	//fmt.Printf("Size %d\n", cursorSize)
 	for i := 0; i + lastAdd < cursor.Count;  {
+
 		lastAdd = 0
 
+		//if buckets[currentCursor] == 1 {
+		//	fmt.Println("Attention here")
+		//}
 		values, err := bitcask.entryMap.bucket(currentCursor)
-		if err != nil {
-			return retBytes, -1, err
-		}
-		for _, k := range values {
-			entry := k.(*entry)
-			byteEncodedData, err := bitcask.bitcaskPoolManager.FetchBytes(entry.fileID, entry.valueSize, entry.valuePos, entry.timestamp)
-			if err != nil {
-				return retBytes, -1, err
+
+		//fmt.Printf("Use cursor %d get length %d, and bucket is %d, i is %d\n", currentCursor, len(values), buckets[currentCursor], i)
+		if err == nil {
+			for _, k := range values {
+				entry := k.(*entry)
+				byteEncodedData, err := bitcask.bitcaskPoolManager.FetchBytes(entry.fileID, entry.valueSize, entry.valuePos, entry.timestamp)
+				if err != nil {
+					return retBytes, -1, err
+				}
+				key, valueBytes, _ := PersistDecoding(byteEncodedData)
+				// match the string
+				if !judgeStr(string(key)) {
+					continue
+				}
+				//fmt.Println("Append")
+				retBytes = append(retBytes, valueBytes)
+				i++
+				lastAdd++
 			}
-			key, valueBytes, _ := PersistDecoding(byteEncodedData)
-			// match the string
-			if judgeStr(string(key)) {
-				continue
-			}
-			retBytes = append(retBytes, valueBytes)
-			i++
-			lastAdd++
 		}
+
 		// next cursor
+
 		revcur := byteReverse(currentCursor, cursorSize)
 		revcur++
 		// next cursor
-		currentCursor = int(revcur)
+		currentCursor = int(byteReverse(int(revcur), cursorSize))
 		if currentCursor == 0 {
 			break
 		}
+
 	}
 	return retBytes, currentCursor, nil
 }
@@ -118,19 +136,19 @@ func countDataBytes( size uint32) int {
 		size = size >> 1
 		cnt++
 	}
-	return cnt
+	return cnt - 1
 }
 
 func byteReverse(num int, size int) uint32 {
 	countData := countDataBytes(uint32(size))
 	var ret uint32 = 0
 	for  i := 0; i < countData; i++ {
-		data := num & 1
-		if data == 1 {
+		ret *= 2
+		if num % 2 == 1 {
 			ret += 1
 		}
 
-		ret *= 2
+
 		num = num >> 1
 	}
 	return ret
