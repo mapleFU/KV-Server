@@ -70,7 +70,8 @@ func (scanMap *scanMap) getEntry(key string) (*entry, bool) {
 }
 
 func (scanMap *scanMap ) iterator() types.KVIterator {
-	return scanMap.iterator()
+	
+	return scanMap.table.Iterate()
 }
 
 const (

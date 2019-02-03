@@ -108,6 +108,13 @@ like Put...
  write hashmap, just remove the record
  */
 func (bitcask *Bitcask) Del(key []byte) error {
+	delValue := emptyBytes
+	delEntryBytes := PersistEncoding(key, delValue, time.Now())
+	_, _, _, _, err := bitcask.bitcaskPoolManager.AppendRecord(delEntryBytes)
+	if err != nil {
+		// put error
+		return err
+	}
 	bitcask.entryMap.deleteRecord(string(key))
 	return nil
 }
