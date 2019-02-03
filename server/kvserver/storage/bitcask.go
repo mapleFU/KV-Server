@@ -18,7 +18,11 @@ func init()  {
 
 type Bitcask struct {
 	// map of record
-	entryMap entryMap
+
+	// change entryMap to scanMap
+	//entryMap entryMap
+	entryMap scanMap
+
 	bitcaskPoolManager *buffer.BitcaskPoolManager
 
 	// the directory under control
@@ -30,7 +34,7 @@ type Bitcask struct {
 func Open(dirName string) *Bitcask  {
 	bitcask := Bitcask{}
 
-	bitcask.entryMap = *newEntryMap()
+	bitcask.entryMap = *newScanMap()
 	bitcask.directoryName = dirName
 	bc, err := buffer.Open(dirName)
 	if err != nil {
