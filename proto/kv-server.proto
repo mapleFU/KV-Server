@@ -17,6 +17,7 @@ message Value {
 
 message Values {
     repeated Value values = 1;
+    int32 Cursor = 2;   // scan cursor
 }
 
 message Key {
