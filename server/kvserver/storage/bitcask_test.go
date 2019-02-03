@@ -4,6 +4,7 @@ import (
 	"testing"
 	"fmt"
 	"math"
+	"github.com/laohanlinux/bitcask"
 )
 
 func TestOpen(t *testing.T) {

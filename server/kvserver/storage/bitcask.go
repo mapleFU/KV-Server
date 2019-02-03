@@ -71,6 +71,7 @@ func (bitcask *Bitcask) Scan(cursor ScanCursor) ([][]byte, int, error) {
 			return retBytes, -1, err
 		}
 		judgeStr = func(key string) bool {
+			log.Infoln("Match %v with reg %v", key, cursor.MatchKeyString)
 			return reg.Match([]byte(key))
 		}
 	} else {

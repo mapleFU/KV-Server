@@ -47,7 +47,7 @@ func TestBasicKVSetAndGet(t *testing.T) {
 	}
 }
 
-func TestBasicKVGetNil(t* testing.T)  {
+func TestBasicKVGetNil(t *testing.T)  {
 	conn, err := grpc.Dial(rpcAddress, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -99,10 +99,12 @@ func TestBasicKVScan(t *testing.T)  {
 		Match: &pb.Key{Key:"Test.*9$"},
 		Count: 1000,
 		Cursor: 0,
+		UseKey:true,
 	})
 	for _, v := range  scan.Values {
 
 		i, err := strconv.Atoi(string(v.Values))
+		//fmt.Println(i)
 		if err != nil {
 			t.Fatal(err)
 		}
