@@ -2,14 +2,15 @@ package storage
 
 import (
 	"sync"
+	"time"
+	"regexp"
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/mapleFU/KV-Server/server/kvserver/storage/buffer"
-	"time"
 	"github.com/mapleFU/KV-Server/proto"
-	"regexp"
-
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/buffer"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/schema"
+	"io"
 )
 
 var emptyBytes []byte
@@ -19,6 +20,7 @@ func init()  {
 }
 
 type Bitcask struct {
+	options *Options
 	// map of record
 
 	// change entryMap to scanMap
@@ -26,15 +28,21 @@ type Bitcask struct {
 	entryMap scanMap
 
 	bitcaskPoolManager *buffer.BitcaskPoolManager
-
+	redoLogger *redoLogger
 	// the directory under control
 	directoryName string
 
 	mu sync.RWMutex
 }
 
-func Open(dirName string) *Bitcask  {
+func (bitcask *Bitcask) currentFileID() int {
+	return bitcask.bitcaskPoolManager.CurrentFileId
+}
+
+func Open(dirName string, options *Options) *Bitcask  {
 	bitcask := Bitcask{}
+
+	bitcask.options = options
 
 	bitcask.entryMap = *newScanMap()
 	bitcask.directoryName = dirName
@@ -44,11 +52,24 @@ func Open(dirName string) *Bitcask  {
 	}
 	bitcask.bitcaskPoolManager = bc
 
+	logger, err := newRedoLogger(bitcask.directoryName)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	bitcask.redoLogger = logger
+
 	return &bitcask
 }
 
 func (bitcask *Bitcask) Close() {
 	bitcask.bitcaskPoolManager.Close()
+}
+
+
+func (bitcask *Bitcask) doWalLog(entry *entry, string string)  {
+	if bitcask.options != nil && bitcask.options.UseLog {
+		bitcask.redoLogger.writeLog(entry, string)
+	}
 }
 
 func (bitcask *Bitcask) Scan(cursor ScanCursor) ([][]byte, int, error) {
@@ -71,7 +92,7 @@ func (bitcask *Bitcask) Scan(cursor ScanCursor) ([][]byte, int, error) {
 			return retBytes, -1, err
 		}
 		judgeStr = func(key string) bool {
-			log.Infoln("Match %v with reg %v", key, cursor.MatchKeyString)
+			log.Infof("Match %v with reg %v\n", key, cursor.MatchKeyString)
 			return reg.Match([]byte(key))
 		}
 	} else {
@@ -101,11 +122,11 @@ func (bitcask *Bitcask) Scan(cursor ScanCursor) ([][]byte, int, error) {
 		if err == nil {
 			for _, k := range values {
 				entry := k.(*entry)
-				byteEncodedData, err := bitcask.bitcaskPoolManager.FetchBytes(entry.fileID, entry.valueSize, entry.valuePos, entry.timestamp)
+				byteEncodedData, err := bitcask.bitcaskPoolManager.FetchBytes(entry.FileID, entry.ValueSize, entry.ValuePos, entry.Timestamp)
 				if err != nil {
 					return retBytes, -1, err
 				}
-				key, valueBytes, _ := PersistDecoding(byteEncodedData)
+				key, valueBytes, _ := schema.PersistDecoding(byteEncodedData)
 				// match the string
 				if !judgeStr(string(key)) {
 					continue
@@ -163,11 +184,11 @@ func (bitcask *Bitcask) Get(key []byte) ([]byte, error) {
 	if !exists {
 		return emptyBytes, &kvstore_methods.UnexistsError{Key:keyString,}
 	}
-	byteEncodedData, err := bitcask.bitcaskPoolManager.FetchBytes(entry.fileID, entry.valueSize, entry.valuePos, entry.timestamp)
+	byteEncodedData, err := bitcask.bitcaskPoolManager.FetchBytes(entry.FileID, entry.ValueSize, entry.ValuePos, entry.Timestamp)
 	if err != nil {
 		return emptyBytes, err
 	}
-	_, valueBytes, _ := PersistDecoding(byteEncodedData)
+	_, valueBytes, _ := schema.PersistDecoding(byteEncodedData)
 	return valueBytes, nil
 }
 
@@ -176,8 +197,12 @@ write disk -- write hashmap
  */
 func (bitcask *Bitcask) Put(key []byte, value []byte) error {
 	cTime := time.Now()
+
+
 	log.Infof("Put key(%s)-value(%s)", string(key), string(value))
-	dataEntryBytes := PersistEncoding(key, value, cTime)
+
+
+	dataEntryBytes := schema.PersistEncoding(key, value, cTime)
 	fileID, valueSz, valuePos, timeStamp, err := bitcask.bitcaskPoolManager.AppendRecord(dataEntryBytes)
 	if err != nil {
 		// put error
@@ -185,11 +210,13 @@ func (bitcask *Bitcask) Put(key []byte, value []byte) error {
 	}
 
 	entry := entry{
-		fileID:fileID,
-		valuePos:valuePos,
-		valueSize:valueSz,
-		timestamp:timeStamp,
+		FileID:fileID,
+		ValuePos:valuePos,
+		ValueSize:valueSz,
+		Timestamp:timeStamp,
 	}
+	bitcask.doWalLog(&entry, string(key))
+
 	if _, ok := bitcask.entryMap.getEntry(string(key)); ok {
 		// flush
 		err = bitcask.entryMap.flushRecord(string(key), &entry)
@@ -213,15 +240,47 @@ like Put...
  */
 func (bitcask *Bitcask) Del(key []byte) error {
 	delValue := emptyBytes
-	delEntryBytes := PersistEncoding(key, delValue, time.Now())
-	_, _, _, _, err := bitcask.bitcaskPoolManager.AppendRecord(delEntryBytes)
+	delEntryBytes := schema.PersistEncoding(key, delValue, time.Now())
+	fileID, valueSz, valuePos, timeStamp, err := bitcask.bitcaskPoolManager.AppendRecord(delEntryBytes)
+
 	if err != nil {
 		// put error
 		return err
 	}
+	entry := entry{
+		FileID:fileID,
+		ValuePos:valuePos,
+		ValueSize:valueSz,
+		Timestamp:timeStamp,
+	}
+	bitcask.doWalLog(&entry, string(key))
 	bitcask.entryMap.deleteRecord(string(key))
 	return nil
 }
 
+// TODO: this should block other processes
+func (bitcask *Bitcask) Recover() error {
+	var bios int64
+	fileEof := false
+	fileStat, err := bitcask.redoLogger.logFile.Stat()
+	if err != nil {
+		return err
+	}
+	fsz := fileStat.Size()
+	for !fileEof && bios < fsz {
+		log.Infoln(bios, fsz)
+		entry, key, biosDelta, err := bitcask.redoLogger.readLog(bios)
+		if err != nil {
+			if err == io.EOF {
+				fileEof = true
+			} else {
+				return nil
+			}
+		}
+		bios += int64(biosDelta)
+		bitcask.entryMap.flushRecord(key, entry)
+	}
+	return nil
+}
 
 

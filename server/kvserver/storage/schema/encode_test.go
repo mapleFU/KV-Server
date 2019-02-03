@@ -1,10 +1,11 @@
-package storage
+package schema
 
 import (
 	"testing"
 	"time"
 	"bytes"
 )
+
 
 func TestEncodeDecode(t *testing.T)  {
 	key := []byte("test-key")

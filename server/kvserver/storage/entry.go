@@ -10,10 +10,10 @@ package storage
 import "time"
 
 type entry struct {
-	fileID uint32
-	valueSize uint32
-	valuePos uint32
-	timestamp uint32
+	FileID uint32
+	ValueSize uint32
+	ValuePos uint32
+	Timestamp uint32
 }
 
 /**
@@ -23,9 +23,9 @@ just use for test...
 func CreateEntryInCurrentTime(file uint32, valueSize uint32, valuePos uint32) *entry {
 	currentTime := time.Now().UnixNano()
 	return &entry{
-		fileID:file,
-		valueSize:valueSize,
-		valuePos: valuePos,
-		timestamp: uint32(currentTime),
+		FileID:file,
+		ValueSize:valueSize,
+		ValuePos: valuePos,
+		Timestamp: uint32(currentTime),
 	}
 }

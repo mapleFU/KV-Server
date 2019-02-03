@@ -5,17 +5,17 @@ import (
 	log "github.com/sirupsen/logrus"
 	"os"
 	"path"
-	"github.com/mapleFU/KV-Server/server/kvserver/storage"
-	"fmt"
-	"time"
 	"sync"
+	"time"
 	"strings"
+	"fmt"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/schema"
 )
 
 
 
 func TestOpen(t *testing.T) {
-	testDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata"
+	testDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/test2"
 	bufPool, err := Open(testDir)
 	if err != nil {
 		t.Fatal(err)
@@ -54,7 +54,7 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 		key := []byte(fmt.Sprintf("key-%d", i))
 		value := []byte(fmt.Sprintf("value-%d", i))
 
-		datas := storage.PersistEncoding(key, value, time.Now())
+		datas := schema.PersistEncoding(key, value, time.Now())
 		wg.Add(1)
 		go func( dataBytes []byte, index int) {
 
@@ -80,7 +80,7 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			key, value, _ :=storage.PersistDecoding(datas)
+			key, value, _ := schema.PersistDecoding(datas)
 			if strings.Compare(string(key), fmt.Sprintf("key-%d", i)) != 0 {
 				t.Fatal("key error")
 			}
@@ -91,4 +91,50 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 			log.Infof("Value in %d pos is zero, write failed", i)
 		}
 	}
+}
+
+func TestReadRecords(t *testing.T) {
+	testDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testAppend"
+	bufPool, err := Open(testDir)
+	defer bufPool.Close()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var wg sync.WaitGroup
+
+	var arrMux sync.Mutex
+	dataArray := make([]testEntry, 10)
+	for i := 0; i < 10; i++ {
+		key := []byte(fmt.Sprintf("key-%d", i))
+		value := []byte(fmt.Sprintf("value-%d", i))
+
+		datas := schema.PersistEncoding(key, value, time.Now())
+		wg.Add(1)
+		go func( dataBytes []byte, index int) {
+
+			v1, v2, v3, v4, err := bufPool.AppendRecord(datas)
+			if err != nil {
+				t.Fatal(err)
+
+			} else {
+				arrMux.Lock()
+				defer arrMux.Unlock()
+				dataArray[index] = testEntry{
+					v1, v2, v3, v4,
+				}
+			}
+			wg.Done()
+		} (datas, i)
+	}
+	wg.Wait()
+	f, err := os.Open("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testAppend/0.data")
+	if err != nil {
+		t.Fatal(err)
+	}
+	records, err := ReadRecords(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+	os.Remove("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testAppend/0.data")
+	log.Infoln(len(records))
 }

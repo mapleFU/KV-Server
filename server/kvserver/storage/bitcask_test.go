@@ -4,11 +4,14 @@ import (
 	"testing"
 	"fmt"
 	"math"
-	"github.com/laohanlinux/bitcask"
+	"bytes"
+	"path/filepath"
+	"os"
+	"path"
 )
 
 func TestOpen(t *testing.T) {
-	bitcask := Open("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/data")
+	bitcask := Open("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/data", nil)
 	defer bitcask.Close()
 	if bitcask == nil {
 		t.Fatal("bitcask is nil")
@@ -23,7 +26,7 @@ func TestOpen(t *testing.T) {
 }
 
 func TestBitcask_Scan(t *testing.T) {
-	bitcask := Open("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testScan")
+	bitcask := Open("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testScan", nil)
 	defer bitcask.Close()
 
 	for i := 0; i < 1000; i++ {
@@ -111,4 +114,87 @@ func TestByteReverse(t *testing.T)  {
 		round++
 	}
 	fmt.Println(round)
+}
+
+func TestBitcask_Recover(t *testing.T) {
+	workDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testRecover"
+	bitcask := Open(workDir, &Options{UseLog:true})
+	defer RemoveContents(workDir)
+
+	for i := 0; i < 100; i++ {
+		key := []byte(fmt.Sprintf("key-%d", i))
+		value := []byte(fmt.Sprintf("value-%d", i))
+		err := bitcask.Put(key, value)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	bitcask.Close()
+
+	bitcask = Open(workDir, &Options{UseLog:true})
+	err := bitcask.Recover()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resp, err := bitcask.Get([]byte("key-1"))
+	if err != nil {
+
+		t.Fatal(err)
+	}
+	if bytes.Compare(resp, []byte("value-1")) != 0 {
+		t.Fatal("recover failed")
+	}
+
+}
+
+func RemoveContents(dir string) error {
+	files, err := filepath.Glob(filepath.Join(dir, "*"))
+	if err != nil {
+		return err
+	}
+	for _, file := range files {
+		err = os.RemoveAll(file)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func TestWalRead(t *testing.T)  {
+	workDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testLogger"
+	defer os.Remove(path.Join(workDir, "log.hint"))
+	logger, err := newRedoLogger(workDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entryLog := &entry{
+		FileID:0,
+		ValueSize:12,
+		ValuePos: 13,
+		Timestamp:15,
+	}
+	logger.writeLog(entryLog, "key-1")
+	data := writeWalLog(entryLog, "key-1")
+	f, _ := os.Open(path.Join(workDir, "log.hint"))
+	readData := make([]byte, len(data))
+	f.Read(readData)
+	if bytes.Compare(readData, data) != 0 {
+		t.Fatal("bytes.Compare(readData, data) != 0")
+	}
+	f.ReadAt(readData, 0)
+	if bytes.Compare(readData, data) != 0 {
+		t.Fatal("bytes.Compare(readData, data) != 0")
+	}
+
+	entry, key, _, err := readLog(f, 0)
+	if entry.ValuePos != entryLog.ValuePos {
+		t.Fatal("ReadLog parse error")
+	}
+	_, key, _, _= logger.readLog(0 )
+	if key != "key-1" {
+		t.Fatal("logger error with key " + key)
+	}
+
 }

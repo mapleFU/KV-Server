@@ -1,4 +1,4 @@
-package storage
+package schema
 
 import (
 	"time"
@@ -20,7 +20,7 @@ crc | tstamp | ksz | value_sz | k | v
  header
 | crc | tstamp | ksz | value_sz |
   */
-type bitcaskStoreHeader struct {
+type BitcaskStoreHeader struct {
 	Crc uint32
 	TimeStamp uint32
 	//timeStamp uint64	// u64 unixNano
@@ -30,6 +30,11 @@ type bitcaskStoreHeader struct {
 
 const PersistHeaderSize  = 32 / 8 + 32 / 8 + 32 / 8 + 32 / 8
 
+/**
+key: key of key/value
+value: value of key/value
+timeStamp: the time to store
+ */
 func PersistEncoding(key []byte, value []byte, timeStamp time.Time) []byte {
 	crc := crc32.ChecksumIEEE(value)
 
@@ -42,7 +47,7 @@ func PersistEncoding(key []byte, value []byte, timeStamp time.Time) []byte {
 	buf := make([]byte, bufSize)
 
 	// write data to buffer
-	header := bitcaskStoreHeader{
+	header := BitcaskStoreHeader{
 		Crc:crc,
 		TimeStamp: unixNano,
 		KeySz:keySize,
@@ -70,7 +75,7 @@ func PersistEncoding(key []byte, value []byte, timeStamp time.Time) []byte {
 }
 
 func PersistDecoding(data []byte) ([]byte, []byte, time.Time) {
-	header := bitcaskStoreHeader{}
+	header := BitcaskStoreHeader{}
 	//fmt.Printf("%d -- %d\n", PersistHeaderSize, unsafe.Sizeof(bitcaskStoreHeader{}))
 
 	binary.Read(bytes.NewBuffer(data[:PersistHeaderSize]), binary.LittleEndian, &header)
