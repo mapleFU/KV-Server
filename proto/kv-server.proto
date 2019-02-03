@@ -37,6 +37,9 @@ message OperationOK {
 // the args of scan
 message ScanArgs {
     int32 cursor = 1;   // scan cursor
+
+    bool useKey = 4;    // if we want to use the key
     Key match = 2;      // the key to match
+
     int32 count = 3;    // the value to count
 }

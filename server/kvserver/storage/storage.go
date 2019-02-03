@@ -1,7 +1,13 @@
 package storage
 
 type ScanCursor struct {
-	cursor string
+	// cursor
+	Cursor int
+	// match
+	UseMatchKey bool
+	MatchKeyString string
+	// count has a default: 10
+	Count int
 }
 
 type Storage interface {

@@ -8,6 +8,7 @@ import (
 	"github.com/mapleFU/KV-Server/server/kvserver/storage/buffer"
 	"time"
 	"github.com/mapleFU/KV-Server/proto"
+	"regexp"
 )
 
 var emptyBytes []byte
@@ -49,9 +50,93 @@ func (bitcask *Bitcask) Close() {
 	bitcask.bitcaskPoolManager.Close()
 }
 
-func (*Bitcask) Scan(cursor ScanCursor) ([][]byte, error) {
-	panic("implement me")
+func (bitcask *Bitcask) Scan(cursor ScanCursor) ([][]byte, int, error) {
+	var judgeStr func(string string) bool
+	retBytes := make([][]byte, 0)
+
+	if cursor.Cursor < 0 {
+		return retBytes, -1, &ArgumentError{
+			Expected:"not less than 0",
+			Value:cursor.Cursor,
+		}
+	}
+
+	if cursor.UseMatchKey {
+		reg, err := regexp.Compile(cursor.MatchKeyString)
+		if err != nil {
+			return retBytes, -1, err
+		}
+		judgeStr = func(key string) bool {
+			return reg.Match([]byte(key))
+		}
+	} else {
+		judgeStr = func(string string) bool {
+			return true
+		}
+	}
+
+	currentCursor := cursor.Cursor
+	cursorSize := bitcask.entryMap.Size()
+	var lastAdd int = 0
+	for i := 0; i + lastAdd < cursor.Count;  {
+		lastAdd = 0
+
+		values, err := bitcask.entryMap.bucket(currentCursor)
+		if err != nil {
+			return retBytes, -1, err
+		}
+		for _, k := range values {
+			entry := k.(*entry)
+			byteEncodedData, err := bitcask.bitcaskPoolManager.FetchBytes(entry.fileID, entry.valueSize, entry.valuePos, entry.timestamp)
+			if err != nil {
+				return retBytes, -1, err
+			}
+			key, valueBytes, _ := PersistDecoding(byteEncodedData)
+			// match the string
+			if judgeStr(string(key)) {
+				continue
+			}
+			retBytes = append(retBytes, valueBytes)
+			i++
+			lastAdd++
+		}
+		// next cursor
+		revcur := byteReverse(currentCursor, cursorSize)
+		revcur++
+		// next cursor
+		currentCursor = int(revcur)
+		if currentCursor == 0 {
+			break
+		}
+	}
+	return retBytes, currentCursor, nil
 }
+
+func countDataBytes( size uint32) int {
+	cnt := 0
+	for size > 0 {
+		size = size >> 1
+		cnt++
+	}
+	return cnt
+}
+
+func byteReverse(num int, size int) uint32 {
+	countData := countDataBytes(uint32(size))
+	var ret uint32 = 0
+	for  i := 0; i < countData; i++ {
+		data := num & 1
+		if data == 1 {
+			ret += 1
+		}
+
+		ret *= 2
+		num = num >> 1
+	}
+	return ret
+}
+
+
 
 func (bitcask *Bitcask) Get(key []byte) ([]byte, error) {
 	keyString := string(key)

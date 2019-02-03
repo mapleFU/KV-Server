@@ -50,28 +50,28 @@ func (s *KVService) Delete(ctx context.Context, req *pb.Key) (*pb.OperationOK, e
 }
 
 func (s *KVService) Scan(ctx context.Context, req *pb.ScanArgs) (*pb.Values, error) {
-	log.Infoln("Scan")
-	panic("impl me")
-	//values := make([]*pb.Value, 0)
-	//
-	//reg, err := regexp.Compile(req.Match.Key)
-	//if err != nil {
-	//	return &pb.Values{}, nil
-	//}
-	//index, cnt := 0, 0
-	//for k, v := range s.kvMap {
-	//
-	//	if reg.MatchString(k) {
-	//		if int32(index) > req.Cursor && int32(cnt) < req.Count {
-	//			values = append(values, &pb.Value{Values:v})
-	//			cnt++
-	//		}
-	//		index++
-	//	}
-	//}
-	//return &pb.Values{
-	//	Values:values,
-	//}, nil
+	if req.Count == -1 {
+		req.Count = 10
+	}
+	if !req.UseKey {
+		req.Match.Key = ""
+	}
+	values, nextCursor, err := s.bitcask.Scan(storage.ScanCursor{
+		Cursor:int(req.Cursor),
+		UseMatchKey:req.UseKey,
+		MatchKeyString:req.Match.Key,
+		Count:int(req.Count),
+	})
+	if err != nil {
+		return &pb.Values{}, err
+	}
+	retValues := make([]*pb.Value, len(values))
+	for i, arrbytes := range values {
+		retValues[i] = &pb.Value{
+			Values:arrbytes,
+		}
+	}
+	return &pb.Values{Values:retValues, Cursor:int32(nextCursor)}, nil
 }
 
 func NewKVService() *KVService {
