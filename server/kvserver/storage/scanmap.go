@@ -1,12 +1,13 @@
 package storage
 
 import (
-	"github.com/timtadh/data-structures/types"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"hash/fnv"
-	"github.com/timtadh/data-structures/hashtable"
+
+	"github.com/mapleFU/data-structures/hashtable"
+	"github.com/timtadh/data-structures/types"
 )
 
 type hashKey string
@@ -70,7 +71,7 @@ func (scanMap *scanMap) getEntry(key string) (*entry, bool) {
 }
 
 func (scanMap *scanMap ) iterator() types.KVIterator {
-	
+
 	return scanMap.table.Iterate()
 }
 
