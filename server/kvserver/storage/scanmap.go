@@ -2,9 +2,9 @@ package storage
 
 import (
 	"strings"
+	"hash/fnv"
 
 	log "github.com/sirupsen/logrus"
-	"hash/fnv"
 
 	"github.com/mapleFU/data-structures/hashtable"
 	"github.com/timtadh/data-structures/types"

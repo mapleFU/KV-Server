@@ -2,11 +2,10 @@ package buffer
 
 import (
 	"sort"
-
-	log "github.com/sirupsen/logrus"
-
 	"os"
 	"sync"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func (poolManager *BitcaskPoolManager) compaction()  {

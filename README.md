@@ -21,9 +21,10 @@ You should first run `main.go` in `server` package. And in client package, you a
 * [x] Set
 * [x] Delete
 * [x] Scan
-* [ ] Client/Server tools
+* [x] Client/Server tools
 * [x] Persistence/Recover
 * [ ] Compaction
+* [ ] Benchmark
 
 ### Client
 

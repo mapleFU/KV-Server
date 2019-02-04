@@ -27,7 +27,7 @@ func main()  {
 	// implementation into the auto-generated interface code for our
 	// protobuf definition.
 
-	pb.RegisterKVServicerServer(s, kv.NewKVService())
+	pb.RegisterKVServicerServer(s, kv.NewKVServiceWithDir("data"))
 
 	// Register reflection service on gRPC server.
 	reflection.Register(s)

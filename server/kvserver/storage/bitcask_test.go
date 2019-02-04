@@ -17,7 +17,7 @@ func TestOpen(t *testing.T) {
 		t.Fatal("bitcask is nil")
 	}
 	if bitcask.bitcaskPoolManager == nil {
-		t.Fatal("bitcask.bitcaskPoolManager is nill")
+		t.Fatal("bitcask.bitcaskPoolManager is nil")
 	}
 
 	//if bitcask.entryMap == nil {
