@@ -5,7 +5,7 @@ crc | tstamp | ksz | value_sz | k | v
 
 key ----> | file_id | value_sz | value_pos | tstamp |
  */
-package storage
+package bitcask
 
 import "time"
 

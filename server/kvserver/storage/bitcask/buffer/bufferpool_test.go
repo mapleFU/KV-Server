@@ -9,21 +9,21 @@ import (
 	"time"
 	"strings"
 	"fmt"
-	"github.com/mapleFU/KV-Server/server/kvserver/storage/schema"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/schema"
 )
 
 
 
 func TestOpen(t *testing.T) {
-	testDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/test2"
+	testDir := "testdata/test2"
 	bufPool, err := Open(testDir)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer bufPool.Close()
 
-	log.Info(bufPool.currentFileId)
-	if bufPool.currentFileId != 0 {
+	log.Info(bufPool.CurrentFileId)
+	if bufPool.CurrentFileId != 0 {
 		t.Fatal("Error, testdir not get 0")
 	}
 	if _, err := os.Stat(path.Join(testDir, "bitcask.lock")); os.IsExist(err) {
@@ -40,7 +40,7 @@ type testEntry struct {
 }
 
 func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
-	testDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testAppend"
+	testDir := "testdata/testAppend"
 	bufPool, err := Open(testDir)
 	defer bufPool.Close()
 	if err != nil {
@@ -94,7 +94,7 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 }
 
 func TestReadRecords(t *testing.T) {
-	testDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testAppend"
+	testDir := "testdata/testAppend"
 	bufPool, err := Open(testDir)
 	defer bufPool.Close()
 	if err != nil {
@@ -127,7 +127,7 @@ func TestReadRecords(t *testing.T) {
 		} (datas, i)
 	}
 	wg.Wait()
-	f, err := os.Open("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testAppend/0.data")
+	f, err := os.Open("testdata/testAppend/0.data")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -135,6 +135,6 @@ func TestReadRecords(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	os.Remove("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testAppend/0.data")
+	os.Remove("testdata/testAppend/0.data")
 	log.Infoln(len(records))
 }

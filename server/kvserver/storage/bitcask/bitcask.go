@@ -1,4 +1,4 @@
-package storage
+package bitcask
 
 import (
 	"sync"
@@ -8,8 +8,8 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/mapleFU/KV-Server/proto"
-	"github.com/mapleFU/KV-Server/server/kvserver/storage/buffer"
-	"github.com/mapleFU/KV-Server/server/kvserver/storage/schema"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/buffer"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/schema"
 	"io"
 )
 
@@ -180,7 +180,7 @@ func byteReverse(num int, size int) uint32 {
 
 func (bitcask *Bitcask) Get(key []byte) ([]byte, error) {
 	keyString := string(key)
-	entry, exists := bitcask.entryMap.getEntry(string(key))
+	entry, exists := bitcask.entryMap.entry(string(key))
 	if !exists {
 		return emptyBytes, &kvstore_methods.UnexistsError{Key:keyString,}
 	}
@@ -217,7 +217,7 @@ func (bitcask *Bitcask) Put(key []byte, value []byte) error {
 	}
 	bitcask.doWalLog(&entry, string(key))
 
-	if _, ok := bitcask.entryMap.getEntry(string(key)); ok {
+	if _, ok := bitcask.entryMap.entry(string(key)); ok {
 		// flush
 		err = bitcask.entryMap.flushRecord(string(key), &entry)
 		if err != nil {

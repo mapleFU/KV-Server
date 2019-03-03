@@ -1,4 +1,4 @@
-package storage
+package bitcask
 
 import (
 	"strings"
@@ -69,7 +69,7 @@ func (scanMap *scanMap) deleteRecord(key string) {
 	scanMap.table.Remove(hashKey(key))
 }
 
-func (scanMap *scanMap) getEntry(key string) (*entry, bool) {
+func (scanMap *scanMap) entry(key string) (*entry, bool) {
 	ret, err := scanMap.table.Get(hashKey(key))
 	if err != nil {
 		return nil, false

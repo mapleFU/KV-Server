@@ -7,11 +7,12 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	pb "github.com/mapleFU/KV-Server/proto"
-	"github.com/mapleFU/KV-Server/server/kvserver/storage"
+	//"github.com/mapleFU/KV-Server/server/kvserver/storage"storage
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask"
 )
 
 type KVService struct {
-	bitcask *storage.Bitcask
+	bitcask *bitcask.Bitcask
 }
 
 var EmptyArray []byte
@@ -56,7 +57,7 @@ func (s *KVService) Scan(ctx context.Context, req *pb.ScanArgs) (*pb.Values, err
 	if !req.UseKey {
 		req.Match.Key = ""
 	}
-	values, nextCursor, err := s.bitcask.Scan(storage.ScanCursor{
+	values, nextCursor, err := s.bitcask.Scan(bitcask.ScanCursor{
 		Cursor:int(req.Cursor),
 		UseMatchKey:req.UseKey,
 		MatchKeyString:req.Match.Key,
@@ -79,7 +80,7 @@ func NewKVService() *KVService {
 }
 
 func NewKVServiceWithDir(dirName string) *KVService {
-	bc := storage.Open(dirName, nil)
+	bc := bitcask.Open(dirName, nil)
 
 	//if err != nil {
 	//	log.Fatal(err)

@@ -3,7 +3,7 @@ Log
 uint32 | uint32  | uint32    | uint32   | ...
 tstamp | keySize | valueSize | valuePos | key
  */
-package storage
+package bitcask
 
 import (
 

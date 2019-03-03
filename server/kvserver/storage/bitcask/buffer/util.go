@@ -1,3 +1,6 @@
+/*
+ TODO: change the relationship between bitcask datafile
+ */
 package buffer
 
 import (
@@ -14,7 +17,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/mapleFU/KV-Server/server/kvserver/storage/schema"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask"
 
 )
 

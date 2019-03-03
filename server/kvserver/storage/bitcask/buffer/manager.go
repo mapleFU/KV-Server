@@ -152,7 +152,7 @@ func Open(dirName string) (*BitcaskPoolManager, error) {
 	if !ok {
 		return nil, err
 	}
-
+	//
 	currentFile, err = os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 
 	fileLength = 0
