@@ -3,7 +3,6 @@ package buffer
 import (
 	"os"
 	"sync"
-	"path"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/gofrs/flock"
@@ -81,7 +80,7 @@ func (poolManager *BitcaskPoolManager) fetchFilePointer(fileName string) (*os.Fi
 func (poolManager *BitcaskPoolManager) Close() {
 	poolManager.closeAllFilePointer()
 	poolManager.currentFile.Close()
-	poolManager.flock.Unlock()
+	//poolManager.flock.Unlock()
 }
 
 func (*BitcaskPoolManager) switchFile()  {
@@ -129,7 +128,8 @@ func (poolManager *BitcaskPoolManager) AppendRecord(data []byte) (uint32, uint32
 
 
 func Open(dirName string) (*BitcaskPoolManager, error) {
-	fileLock := flock.New(path.Join(dirName, "bitcask.lock"))
+	//fileLock := flock.New(path.Join(dirName, "bitcask.lock"))
+	var fileLock *flock.Flock
 
 	var fileName string
 	var currentFileId int
@@ -148,17 +148,18 @@ func Open(dirName string) (*BitcaskPoolManager, error) {
 	}
 	fileName = dataFileName(currentFileId, dirName)
 
-	ok, err := fileLock.TryLock()
-	if !ok {
+	//ok, err := fileLock.TryLock()
+	//if !ok {
+	//	return nil, err
+	//}
+
+	currentFile, err = os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
+
+	if err != nil {
 		return nil, err
 	}
-	//
-	currentFile, err = os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 
 	fileLength = 0
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	poolManager := BitcaskPoolManager{
 		flock:fileLock,

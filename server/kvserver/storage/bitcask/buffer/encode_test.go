@@ -1,4 +1,4 @@
-package bitcask
+package buffer
 
 import (
 	"testing"
@@ -6,7 +6,8 @@ import (
 	"bytes"
 )
 
-
+// TestEncodeDecode is a function to test PersistEncoding and
+// PersistDecoding.
 func TestEncodeDecode(t *testing.T)  {
 	key := []byte("test-key")
 	value := []byte("test-value")

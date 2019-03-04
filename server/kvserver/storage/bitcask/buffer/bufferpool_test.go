@@ -2,20 +2,21 @@ package buffer
 
 import (
 	"testing"
-	log "github.com/sirupsen/logrus"
+
 	"os"
 	"path"
 	"sync"
 	"time"
 	"strings"
 	"fmt"
-	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/schema"
+
+	log "github.com/sirupsen/logrus"
 )
 
 
 
 func TestOpen(t *testing.T) {
-	testDir := "testdata/test2"
+	testDir := "testdata/test-open"
 	bufPool, err := Open(testDir)
 	if err != nil {
 		t.Fatal(err)
@@ -54,7 +55,7 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 		key := []byte(fmt.Sprintf("key-%d", i))
 		value := []byte(fmt.Sprintf("value-%d", i))
 
-		datas := schema.PersistEncoding(key, value, time.Now())
+		datas := PersistEncoding(key, value, time.Now())
 		wg.Add(1)
 		go func( dataBytes []byte, index int) {
 
@@ -80,7 +81,7 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			key, value, _ := schema.PersistDecoding(datas)
+			key, value, _ := PersistDecoding(datas)
 			if strings.Compare(string(key), fmt.Sprintf("key-%d", i)) != 0 {
 				t.Fatal("key error")
 			}
@@ -108,7 +109,7 @@ func TestReadRecords(t *testing.T) {
 		key := []byte(fmt.Sprintf("key-%d", i))
 		value := []byte(fmt.Sprintf("value-%d", i))
 
-		datas := schema.PersistEncoding(key, value, time.Now())
+		datas := PersistEncoding(key, value, time.Now())
 		wg.Add(1)
 		go func( dataBytes []byte, index int) {
 

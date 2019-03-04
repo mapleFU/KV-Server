@@ -8,10 +8,11 @@ import (
 	"path/filepath"
 	"os"
 	"path"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage"
 )
 
 func TestOpen(t *testing.T) {
-	bitcask := Open("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/data", nil)
+	bitcask := Open("testdata/data", nil)
 	defer bitcask.Close()
 	if bitcask == nil {
 		t.Fatal("bitcask is nil")
@@ -40,7 +41,7 @@ func TestBitcask_Scan(t *testing.T) {
 
 	// not use match key
 	var recordCnt int
-	ret, cursor, err := bitcask.Scan(ScanCursor{
+	ret, cursor, err := bitcask.Scan(storage.ScanCursor{
 		UseMatchKey:false,
 		Cursor: 0,
 		Count: -1,
@@ -57,7 +58,7 @@ func TestBitcask_Scan(t *testing.T) {
 
 	// cursor test
 	for cursor != 0 {
-		ret, cursor, err = bitcask.Scan(ScanCursor{
+		ret, cursor, err = bitcask.Scan(storage.ScanCursor{
 			UseMatchKey:false,
 			Cursor: cursor,
 			Count: -1,
@@ -117,7 +118,7 @@ func TestByteReverse(t *testing.T)  {
 }
 
 func TestBitcask_Recover(t *testing.T) {
-	workDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testRecover"
+	workDir := "testdata/testRecover"
 	bitcask := Open(workDir, &Options{UseLog:true})
 	defer RemoveContents(workDir)
 
@@ -163,7 +164,7 @@ func RemoveContents(dir string) error {
 }
 
 func TestWalRead(t *testing.T)  {
-	workDir := "/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testLogger"
+	workDir := "testdata/testLogger"
 	defer os.Remove(path.Join(workDir, "log.hint"))
 	logger, err := newRedoLogger(workDir)
 	if err != nil {

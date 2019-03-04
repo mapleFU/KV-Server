@@ -16,13 +16,11 @@ import (
 	"io"
 
 	log "github.com/sirupsen/logrus"
-
-	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask"
-
 )
 
 /**
-get datafile name from datafile id
+	dataFileName is a function to get datafile name from datafile id and dirName
+	It's not about buffer logic, just combine the os tools
  */
 func dataFileName(dataFileID int, dirName string) string {
 	return path.Join(dirName, fmt.Sprintf("%d.data", dataFileID))
@@ -56,7 +54,7 @@ func listDataFileID(dirName string) ([]int, error) {
 type Record struct {
 	Key []byte							// key
 	Value []byte						// value
-	Header *schema.BitcaskStoreHeader
+	Header *BitcaskStoreHeader
 }
 
 /**
@@ -66,7 +64,7 @@ func ReadRecords(file *os.File) ([]*Record, error) {
 
 	retRecords := make([]*Record, 0)
 
-	header := schema.BitcaskStoreHeader{}
+	header := BitcaskStoreHeader{}
 	buf := make([]byte, unsafe.Sizeof(header))
 	var bios int64
 	bios = 0

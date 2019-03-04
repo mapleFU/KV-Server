@@ -4,13 +4,13 @@ import (
 	"sync"
 	"time"
 	"regexp"
+	"io"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/mapleFU/KV-Server/proto"
 	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/buffer"
-	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/schema"
-	"io"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage"
 )
 
 var emptyBytes []byte
@@ -72,7 +72,7 @@ func (bitcask *Bitcask) doWalLog(entry *entry, string string)  {
 	}
 }
 
-func (bitcask *Bitcask) Scan(cursor ScanCursor) ([][]byte, int, error) {
+func (bitcask *Bitcask) Scan(cursor storage.ScanCursor) ([][]byte, int, error) {
 	var judgeStr func(string string) bool
 	retBytes := make([][]byte, 0)
 
@@ -126,7 +126,7 @@ func (bitcask *Bitcask) Scan(cursor ScanCursor) ([][]byte, int, error) {
 				if err != nil {
 					return retBytes, -1, err
 				}
-				key, valueBytes, _ := schema.PersistDecoding(byteEncodedData)
+				key, valueBytes, _ := buffer.PersistDecoding(byteEncodedData)
 				// match the string
 				if !judgeStr(string(key)) {
 					continue
@@ -188,7 +188,7 @@ func (bitcask *Bitcask) Get(key []byte) ([]byte, error) {
 	if err != nil {
 		return emptyBytes, err
 	}
-	_, valueBytes, _ := schema.PersistDecoding(byteEncodedData)
+	_, valueBytes, _ := buffer.PersistDecoding(byteEncodedData)
 	return valueBytes, nil
 }
 
@@ -202,7 +202,7 @@ func (bitcask *Bitcask) Put(key []byte, value []byte) error {
 	log.Infof("Put key(%s)-value(%s)", string(key), string(value))
 
 
-	dataEntryBytes := schema.PersistEncoding(key, value, cTime)
+	dataEntryBytes := buffer.PersistEncoding(key, value, cTime)
 	fileID, valueSz, valuePos, timeStamp, err := bitcask.bitcaskPoolManager.AppendRecord(dataEntryBytes)
 	if err != nil {
 		// put error
@@ -240,7 +240,7 @@ like Put...
  */
 func (bitcask *Bitcask) Del(key []byte) error {
 	delValue := emptyBytes
-	delEntryBytes := schema.PersistEncoding(key, delValue, time.Now())
+	delEntryBytes := buffer.PersistEncoding(key, delValue, time.Now())
 	fileID, valueSz, valuePos, timeStamp, err := bitcask.bitcaskPoolManager.AppendRecord(delEntryBytes)
 
 	if err != nil {
