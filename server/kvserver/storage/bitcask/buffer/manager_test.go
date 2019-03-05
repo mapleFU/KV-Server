@@ -24,7 +24,7 @@ func TestOpen(t *testing.T) {
 	}
 	defer os.RemoveAll(testDir)
 
-	bufPool, err := Open(testDir)
+	bufPool, err := Open(testDir, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 	}
 	defer os.RemoveAll(testDir)
 
-	bufPool, err := Open(testDir)
+	bufPool, err := Open(testDir, nil)
 	defer bufPool.Close()
 	if err != nil {
 		t.Fatal(err)
@@ -117,7 +117,7 @@ func TestReadRecords(t *testing.T) {
 	os.Mkdir(testDir, 0777)
 	defer os.RemoveAll(testDir)
 
-	bufPool, err := Open(testDir)
+	bufPool, err := Open(testDir, nil)
 	defer bufPool.Close()
 	if err != nil {
 		t.Fatal(err)

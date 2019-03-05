@@ -8,11 +8,21 @@ import (
 	"path/filepath"
 	"os"
 	"path"
+
 	"github.com/mapleFU/KV-Server/server/kvserver/storage"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/options"
 )
 
 func TestOpen(t *testing.T) {
-	bitcask := Open("testdata/data", nil)
+	testDir := "testdata/data"
+
+	err := os.Mkdir(testDir, 0777)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(testDir)
+
+	bitcask := Open(testDir, nil)
 	defer bitcask.Close()
 	if bitcask == nil {
 		t.Fatal("bitcask is nil")
@@ -27,7 +37,14 @@ func TestOpen(t *testing.T) {
 }
 
 func TestBitcask_Scan(t *testing.T) {
-	bitcask := Open("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/testdata/testScan", nil)
+	testDir := "testdata/testScan"
+	err := os.Mkdir(testDir, 0777)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(testDir)
+
+	bitcask := Open(testDir, nil)
 	defer bitcask.Close()
 
 	for i := 0; i < 1000; i++ {
@@ -72,6 +89,7 @@ func TestBitcask_Scan(t *testing.T) {
 }
 
 func TestByteReverse(t *testing.T)  {
+
 	begin := 0
 	size := 16
 	//if byteReverse(begin, size) != 0 {
@@ -119,7 +137,13 @@ func TestByteReverse(t *testing.T)  {
 
 func TestBitcask_Recover(t *testing.T) {
 	workDir := "testdata/testRecover"
-	bitcask := Open(workDir, &Options{UseLog:true})
+	err := os.Mkdir(workDir, 0777)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(workDir)
+
+	bitcask := Open(workDir, &options.Options{UseLog:true})
 	defer RemoveContents(workDir)
 
 	for i := 0; i < 100; i++ {
@@ -132,8 +156,8 @@ func TestBitcask_Recover(t *testing.T) {
 	}
 	bitcask.Close()
 
-	bitcask = Open(workDir, &Options{UseLog:true})
-	err := bitcask.Recover()
+	bitcask = Open(workDir, &options.Options{UseLog:true})
+	err = bitcask.Recover()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -165,7 +189,12 @@ func RemoveContents(dir string) error {
 
 func TestWalRead(t *testing.T)  {
 	workDir := "testdata/testLogger"
-	defer os.Remove(path.Join(workDir, "log.hint"))
+	err := os.Mkdir(workDir, 0777)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(workDir)
+
 	logger, err := newRedoLogger(workDir)
 	if err != nil {
 		t.Fatal(err)

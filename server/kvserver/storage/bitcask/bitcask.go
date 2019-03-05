@@ -11,6 +11,7 @@ import (
 	"github.com/mapleFU/KV-Server/proto"
 	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/buffer"
 	"github.com/mapleFU/KV-Server/server/kvserver/storage"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/options"
 )
 
 var emptyBytes []byte
@@ -20,7 +21,7 @@ func init()  {
 }
 
 type Bitcask struct {
-	options *Options
+	options *options.Options
 	// map of record
 
 	// change entryMap to scanMap
@@ -39,14 +40,14 @@ func (bitcask *Bitcask) currentFileID() int {
 	return bitcask.bitcaskPoolManager.CurrentFileId
 }
 
-func Open(dirName string, options *Options) *Bitcask  {
+func Open(dirName string, options *options.Options) *Bitcask  {
 	bitcask := Bitcask{}
 
 	bitcask.options = options
 
 	bitcask.entryMap = *newScanMap()
 	bitcask.directoryName = dirName
-	bc, err := buffer.Open(dirName)
+	bc, err := buffer.Open(dirName, options)
 	if err != nil {
 		log.Fatal(err)
 	}

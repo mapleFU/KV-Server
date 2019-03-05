@@ -19,6 +19,7 @@ import (
 	"encoding/binary"
 
 	log "github.com/sirupsen/logrus"
+	"path"
 )
 
 // hint file name in the system
@@ -46,7 +47,7 @@ func init()  {
 // writeHint is a function called when closing file
 // it backup the keyDir
 func (bitcask *Bitcask) syncKeyDirToHint()  {
-	hintFile, err := os.OpenFile(HintFileName, os.O_TRUNC|os.O_CREATE|os.O_RDWR, HintFilePerm)
+	hintFile, err := os.OpenFile(path.Join(bitcask.directoryName, HintFileName), os.O_TRUNC|os.O_CREATE|os.O_RDWR, HintFilePerm)
 	if err != nil {
 		// Errors should not happens here
 		log.Fatal(err)
@@ -79,7 +80,7 @@ func (bitcask *Bitcask) syncKeyDirToHint()  {
 // if the hintfile does not exists(like we just begin a Bitcask), no errors will be throw,
 // the return will be whether we have a HintFile
 func (bitcask *Bitcask) loadHint() (bool, error) {
-	hintFile, err := os.Open(HintFileName)
+	hintFile, err := os.Open(path.Join(bitcask.directoryName, HintFileName))
 	if err != nil {
 		log.Info(err)
 		return false, nil

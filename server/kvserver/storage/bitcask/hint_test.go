@@ -19,7 +19,10 @@ func destructTestDirectory(dirName string)  {
 
 func TestLoadHint(t *testing.T)  {
 	curTestDir := "testdata/test-hint"
+
 	createTestDirectory(curTestDir)
+	defer destructTestDirectory(curTestDir)
+
 	bitcask := Open(curTestDir, nil)
 	ok, err := bitcask.loadHint()
 	if err != nil {
@@ -51,5 +54,4 @@ func TestLoadHint(t *testing.T)  {
 			t.Fatalf("in %d, Get not equal with we put", i)
 		}
 	}
-	destructTestDirectory(curTestDir)
 }

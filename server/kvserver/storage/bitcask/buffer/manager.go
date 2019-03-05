@@ -15,7 +15,10 @@ type BitcaskBufferManager struct {
 
 	// status
 	CurrentFileId int	// current file id, manages the current r/w on the file
-	currentFile *os.File	// current write file
+	CurrentFileName string
+	currentWriter BufWriter	// use BufWriter to replace os.File, thus it allows multiple write mode
+	//currentFile *os.File	// current write file
+
 	fileLength int64		// length of current active file
 
 	mu sync.RWMutex			// mu on write
@@ -25,16 +28,16 @@ type BitcaskBufferManager struct {
 	appendMu sync.Mutex			//the mutex to append data
 	flock *flock.Flock
 
-	strategy *options.SyncStrategy
+
 }
 
-func (poolManager *BitcaskBufferManager) getCurrentFile() *os.File {
-	f, err := poolManager.fetchFilePointer(dataFileName(poolManager.CurrentFileId, poolManager.dirName))
-	if err != nil {
-		log.Fatal(err)
-	}
-	return f
-}
+//func (poolManager *BitcaskBufferManager) getCurrentFile() *os.File {
+//	f, err := poolManager.fetchFilePointer(dataFileName(poolManager.CurrentFileId, poolManager.dirName))
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	return f
+//}
 
 func (poolManager *BitcaskBufferManager) closeFilePointerWithoutLock(fileName string)  {
 	file, exists := poolManager.filePool[fileName]
@@ -82,7 +85,7 @@ func (poolManager *BitcaskBufferManager) fetchFilePointer(fileName string) (*os.
 
 func (poolManager *BitcaskBufferManager) Close() {
 	poolManager.closeAllFilePointer()
-	poolManager.currentFile.Close()
+	poolManager.currentWriter.Close()
 }
 
 func (*BitcaskBufferManager) switchFile()  {
@@ -114,7 +117,9 @@ func (poolManager *BitcaskBufferManager) FetchBytes(fileId uint32, valueSize uin
 func (poolManager *BitcaskBufferManager) AppendRecord(data []byte) (uint32, uint32, uint32, uint32, error) {
 	poolManager.appendMu.Lock()
 	defer poolManager.appendMu.Unlock()
-	n, err := poolManager.currentFile.Write(data)
+	// write data happens here
+
+	n, err := poolManager.currentWriter.Write(data)
 
 	oldStart := poolManager.fileLength
 	poolManager.fileLength += int64(n)
@@ -128,8 +133,12 @@ func (poolManager *BitcaskBufferManager) AppendRecord(data []byte) (uint32, uint
 }
 
 
-func Open(dirName string) (*BitcaskBufferManager, error) {
+func Open(dirName string, opts *options.Options) (*BitcaskBufferManager, error) {
 	//fileLock := flock.New(path.Join(dirName, "bitcask.lock"))
+	if opts == nil {
+		opts = options.DefaultOption()
+	}
+
 	var fileLock *flock.Flock
 
 	var fileName string
@@ -154,22 +163,24 @@ func Open(dirName string) (*BitcaskBufferManager, error) {
 	//	return nil, err
 	//}
 
-	currentFile, err = os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
-
-	if err != nil {
-		return nil, err
-	}
+	//currentFile, err = os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
+	//
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	fileLength = 0
 
 	poolManager := BitcaskBufferManager{
 		flock:fileLock,
 		CurrentFileId:currentFileId,
-		currentFile: currentFile,
+		CurrentFileName:fileName,
 		dirName:dirName,
 		fileLength:fileLength,
 		filePool:make(map[string]*os.File),
 	}
+
+	poolManager.loadOptions(opts)
 
 	return &poolManager, nil
 }
