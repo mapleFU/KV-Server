@@ -8,8 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (poolManager *BitcaskPoolManager) compaction()  {
-	panic("not implemented.")
+func (poolManager *BitcaskBufferManager) compaction()  {
 
 	indexes, err := listDataFileID(poolManager.dirName)
 	if err != nil {

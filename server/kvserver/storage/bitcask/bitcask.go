@@ -27,7 +27,7 @@ type Bitcask struct {
 	//entryMap entryMap
 	entryMap scanMap
 
-	bitcaskPoolManager *buffer.BitcaskPoolManager
+	bitcaskPoolManager *buffer.BitcaskBufferManager
 	redoLogger *redoLogger
 	// the directory under control
 	directoryName string

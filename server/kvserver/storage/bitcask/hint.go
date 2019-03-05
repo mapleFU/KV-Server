@@ -12,13 +12,13 @@ we use hint file as a backup of keyDir log
 package bitcask
 
 import (
+	"io"
 	"os"
 	"bytes"
 	"unsafe"
 	"encoding/binary"
 
 	log "github.com/sirupsen/logrus"
-	"io"
 )
 
 // hint file name in the system

@@ -6,26 +6,29 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/gofrs/flock"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/options"
 )
 
-type BitcaskPoolManager struct {
+type BitcaskBufferManager struct {
 	// immutable
-	dirName string
+	dirName string	// name of directory of buffer manager
 
 	// status
-	CurrentFileId int
-	currentFile *os.File
-	fileLength int64
+	CurrentFileId int	// current file id, manages the current r/w on the file
+	currentFile *os.File	// current write file
+	fileLength int64		// length of current active file
 
-	mu sync.RWMutex
+	mu sync.RWMutex			// mu on write
 	filePool map[string]*os.File	// pool to use map
-	// mutex for pool, the mu is used to operating on
 
+	// mutex for pool, the mu is used to operating on
 	appendMu sync.Mutex			//the mutex to append data
 	flock *flock.Flock
+
+	strategy *options.SyncStrategy
 }
 
-func (poolManager *BitcaskPoolManager) getCurrentFile() *os.File {
+func (poolManager *BitcaskBufferManager) getCurrentFile() *os.File {
 	f, err := poolManager.fetchFilePointer(dataFileName(poolManager.CurrentFileId, poolManager.dirName))
 	if err != nil {
 		log.Fatal(err)
@@ -33,7 +36,7 @@ func (poolManager *BitcaskPoolManager) getCurrentFile() *os.File {
 	return f
 }
 
-func (poolManager *BitcaskPoolManager) closeFilePointerWithoutLock(fileName string)  {
+func (poolManager *BitcaskBufferManager) closeFilePointerWithoutLock(fileName string)  {
 	file, exists := poolManager.filePool[fileName]
 	if !exists {
 		return
@@ -41,19 +44,19 @@ func (poolManager *BitcaskPoolManager) closeFilePointerWithoutLock(fileName stri
 	file.Close()
 }
 
-func (poolManager *BitcaskPoolManager) closeFilePointer(fileName string)  {
+func (poolManager *BitcaskBufferManager) closeFilePointer(fileName string)  {
 	poolManager.mu.Lock()
 	poolManager.closeFilePointerWithoutLock(fileName)
 	poolManager.mu.Unlock()
 }
 
-func(poolManager *BitcaskPoolManager) closeAllFilePointer()  {
+func(poolManager *BitcaskBufferManager) closeAllFilePointer()  {
 	for _, v := range poolManager.filePool {
 		v.Close()
 	}
 }
 
-func (poolManager *BitcaskPoolManager) fetchFilePointer(fileName string) (*os.File, error) {
+func (poolManager *BitcaskBufferManager) fetchFilePointer(fileName string) (*os.File, error) {
 	poolManager.mu.RLock()
 	if file, exists := poolManager.filePool[fileName]; exists {
 		defer poolManager.mu.RUnlock()
@@ -77,17 +80,17 @@ func (poolManager *BitcaskPoolManager) fetchFilePointer(fileName string) (*os.Fi
 }
 
 
-func (poolManager *BitcaskPoolManager) Close() {
+func (poolManager *BitcaskBufferManager) Close() {
 	poolManager.closeAllFilePointer()
 	poolManager.currentFile.Close()
 }
 
-func (*BitcaskPoolManager) switchFile()  {
+func (*BitcaskBufferManager) switchFile()  {
 
 }
 
 // fetch bytes are all read operations, will not effect append.
-func (poolManager *BitcaskPoolManager) FetchBytes(fileId uint32, valueSize uint32, valuePos uint32, timeStamp uint32) ([]byte, error) {
+func (poolManager *BitcaskBufferManager) FetchBytes(fileId uint32, valueSize uint32, valuePos uint32, timeStamp uint32) ([]byte, error) {
 
 	fileName := dataFileName(int(fileId), poolManager.dirName)
 	// maybe i should get from a read pool...
@@ -108,7 +111,7 @@ func (poolManager *BitcaskPoolManager) FetchBytes(fileId uint32, valueSize uint3
 }
 
 
-func (poolManager *BitcaskPoolManager) AppendRecord(data []byte) (uint32, uint32, uint32, uint32, error) {
+func (poolManager *BitcaskBufferManager) AppendRecord(data []byte) (uint32, uint32, uint32, uint32, error) {
 	poolManager.appendMu.Lock()
 	defer poolManager.appendMu.Unlock()
 	n, err := poolManager.currentFile.Write(data)
@@ -125,8 +128,7 @@ func (poolManager *BitcaskPoolManager) AppendRecord(data []byte) (uint32, uint32
 }
 
 
-
-func Open(dirName string) (*BitcaskPoolManager, error) {
+func Open(dirName string) (*BitcaskBufferManager, error) {
 	//fileLock := flock.New(path.Join(dirName, "bitcask.lock"))
 	var fileLock *flock.Flock
 
@@ -160,7 +162,7 @@ func Open(dirName string) (*BitcaskPoolManager, error) {
 
 	fileLength = 0
 
-	poolManager := BitcaskPoolManager{
+	poolManager := BitcaskBufferManager{
 		flock:fileLock,
 		CurrentFileId:currentFileId,
 		currentFile: currentFile,

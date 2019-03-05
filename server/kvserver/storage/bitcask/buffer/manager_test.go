@@ -17,6 +17,13 @@ import (
 
 func TestOpen(t *testing.T) {
 	testDir := "testdata/test-open"
+
+	err := os.Mkdir(testDir, 0777)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(testDir)
+
 	bufPool, err := Open(testDir)
 	if err != nil {
 		t.Fatal(err)
@@ -42,6 +49,14 @@ type testEntry struct {
 
 func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 	testDir := "testdata/testAppend"
+
+
+	err := os.Mkdir(testDir, 0777)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(testDir)
+
 	bufPool, err := Open(testDir)
 	defer bufPool.Close()
 	if err != nil {
@@ -92,10 +107,16 @@ func TestBitcaskPoolManager_AppendRecord(t *testing.T) {
 			log.Infof("Value in %d pos is zero, write failed", i)
 		}
 	}
+
+
 }
 
 func TestReadRecords(t *testing.T) {
 	testDir := "testdata/testAppend"
+
+	os.Mkdir(testDir, 0777)
+	defer os.RemoveAll(testDir)
+
 	bufPool, err := Open(testDir)
 	defer bufPool.Close()
 	if err != nil {
