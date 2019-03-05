@@ -63,6 +63,7 @@ func Open(dirName string, options *Options) *Bitcask  {
 
 func (bitcask *Bitcask) Close() {
 	bitcask.bitcaskPoolManager.Close()
+	bitcask.syncKeyDirToHint()
 }
 
 
