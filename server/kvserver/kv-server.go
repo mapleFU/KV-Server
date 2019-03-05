@@ -9,6 +9,7 @@ import (
 	pb "github.com/mapleFU/KV-Server/proto"
 	//"github.com/mapleFU/KV-Server/server/kvserver/storage"storage
 	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage"
 )
 
 type KVService struct {
@@ -57,7 +58,7 @@ func (s *KVService) Scan(ctx context.Context, req *pb.ScanArgs) (*pb.Values, err
 	if !req.UseKey {
 		req.Match.Key = ""
 	}
-	values, nextCursor, err := s.bitcask.Scan(bitcask.ScanCursor{
+	values, nextCursor, err := s.bitcask.Scan(storage.ScanCursor{
 		Cursor:int(req.Cursor),
 		UseMatchKey:req.UseKey,
 		MatchKeyString:req.Match.Key,
@@ -76,7 +77,7 @@ func (s *KVService) Scan(ctx context.Context, req *pb.ScanArgs) (*pb.Values, err
 }
 
 func NewKVService() *KVService {
-	return NewKVServiceWithDir("/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/server/data")
+	return NewKVServiceWithDir("data")
 }
 
 func NewKVServiceWithDir(dirName string) *KVService {

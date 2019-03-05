@@ -4,9 +4,10 @@ import (
 	"strings"
 	"hash/fnv"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/mapleFU/data-structures/hashtable"
+	"github.com/mapleFU/KV-Server/server/kvserver/storage"
+
+	log "github.com/sirupsen/logrus"
 	"github.com/timtadh/data-structures/types"
 )
 
@@ -57,7 +58,7 @@ func (scanMap *scanMap) addRecord(key string, entry *entry) error {
 	return scanMap.table.Put(hashKey(key), entry)
 }
 
-func (scanMap *scanMap) scan(cursor ScanCursor) ([]*entry, *ScanCursor, error) {
+func (scanMap *scanMap) scan(cursor storage.ScanCursor) ([]*entry, *storage.ScanCursor, error) {
 	panic("implement me")
 }
 
@@ -79,7 +80,6 @@ func (scanMap *scanMap) entry(key string) (*entry, bool) {
 }
 
 func (scanMap *scanMap ) iterator() types.KVIterator {
-
 	return scanMap.table.Iterate()
 }
 

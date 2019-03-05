@@ -189,6 +189,7 @@ func (bitcask *Bitcask) Get(key []byte) ([]byte, error) {
 		return emptyBytes, err
 	}
 	_, valueBytes, _ := buffer.PersistDecoding(byteEncodedData)
+	log.Infof("Get %s-%v", string(key), string(valueBytes))
 	return valueBytes, nil
 }
 
@@ -239,6 +240,7 @@ like Put...
  write hashmap, just remove the record
  */
 func (bitcask *Bitcask) Del(key []byte) error {
+	log.Infof("Delete key %s", string(key))
 	delValue := emptyBytes
 	delEntryBytes := buffer.PersistEncoding(key, delValue, time.Now())
 	fileID, valueSz, valuePos, timeStamp, err := bitcask.bitcaskPoolManager.AppendRecord(delEntryBytes)
@@ -258,7 +260,6 @@ func (bitcask *Bitcask) Del(key []byte) error {
 	return nil
 }
 
-// TODO: this should block other processes
 func (bitcask *Bitcask) Recover() error {
 	var bios int64
 	fileEof := false

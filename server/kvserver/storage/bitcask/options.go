@@ -2,8 +2,10 @@ package bitcask
 
 import log "github.com/sirupsen/logrus"
 
+// Options is a module to describe the arguments in bitcask
 type Options struct {
-	UseLog bool
+	UseLog bool		// use wal log to keep messages in memory
+
 }
 
 func (bitcask *Bitcask) optionInit(options *Options)  {

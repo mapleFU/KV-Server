@@ -80,7 +80,6 @@ func (poolManager *BitcaskPoolManager) fetchFilePointer(fileName string) (*os.Fi
 func (poolManager *BitcaskPoolManager) Close() {
 	poolManager.closeAllFilePointer()
 	poolManager.currentFile.Close()
-	//poolManager.flock.Unlock()
 }
 
 func (*BitcaskPoolManager) switchFile()  {
@@ -172,5 +171,3 @@ func Open(dirName string) (*BitcaskPoolManager, error) {
 
 	return &poolManager, nil
 }
-
-

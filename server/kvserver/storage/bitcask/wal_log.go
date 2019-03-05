@@ -110,8 +110,6 @@ func readLog(file *os.File, bios int64) (*entry, string, int, error) {
 	err := binary.Read(bytes.NewBuffer(headerBuf), binary.LittleEndian, &walHeader)
 	if err != nil {
 		return nil, "", 0, err
-
-
 	}
 	keyBuf := make([]byte, walHeader.KeySize)
 	read, err := file.ReadAt(keyBuf, bios + int64(headerSize))
