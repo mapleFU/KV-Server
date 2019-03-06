@@ -143,7 +143,6 @@ func Open(dirName string, opts *options.Options) (*BitcaskBufferManager, error) 
 
 	var fileName string
 	var currentFileId int
-	var currentFile *os.File
 	var fileLength int64
 
 	currentFileId = 0

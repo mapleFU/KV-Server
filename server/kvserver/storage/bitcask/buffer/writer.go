@@ -6,6 +6,9 @@ import (
 	"time"
 
 	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/options"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
 )
 
 type BufWriter interface {
@@ -23,7 +26,12 @@ func newWriter(sync options.Sync, fileName string) (BufWriter, error) {
 		return newWriterOSync(fileName)
 	case options.None:
 		return newWriterNone(fileName)
+	default:
+		log.Fatal("sync.Strategy got unexcepted value")
+
+		return nil, errors.New("sync.Strategy got unexcepted value")
 	}
+
 }
 
 type WriterNone struct {
@@ -31,7 +39,7 @@ type WriterNone struct {
 }
 
 func newWriterNone(fileName string) (*WriterNone, error) {
-	currentFile, err := os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+	currentFile, err := os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0777)
 
 	if err != nil {
 		return nil, err
@@ -60,7 +68,7 @@ type WriterOSync struct {
 
 func newWriterOSync(fileName string) (*WriterOSync, error) {
 	// create  with o_sync
-	currentFile, err := os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_RDWR|os.O_SYNC, 0666)
+	currentFile, err := os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_RDWR|os.O_SYNC, 0777)
 
 	if err != nil {
 		return nil, err
@@ -76,6 +84,7 @@ func (wos *WriterOSync) Write(b []byte) (int, error) {
 
 func (wos *WriterOSync) Flush() error {
 	// doesn't need to flush, hahaha
+	return nil
 }
 
 func (wos *WriterOSync) Close() error {
@@ -106,7 +115,7 @@ func (wi *WriterInterval) Close() error {
 	// wait for it close well
 	wi.closeBuf <- struct{}{}
 	close(wi.closeBuf)
-	return wi.Close()
+	return wi.currentFile.Close()
 }
 
 func newWriterInterval(fileName string, interval int) (*WriterInterval, error) {

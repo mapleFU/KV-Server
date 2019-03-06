@@ -18,6 +18,7 @@ func (bm *BitcaskBufferManager) loadOptions(op *options.Options) error {
 		return err
 	}
 
+	// TODO: impl this
 	switch op.Merge.Policy {
 	case options.Always:
 
@@ -27,4 +28,5 @@ func (bm *BitcaskBufferManager) loadOptions(op *options.Options) error {
 
 	}
 
+	return nil
 }

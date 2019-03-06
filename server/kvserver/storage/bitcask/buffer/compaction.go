@@ -8,16 +8,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// compaction is a function merge the data of every data file
+// it will merge all data file and generate a new hint file
 func (poolManager *BitcaskBufferManager) compaction()  {
 
 	indexes, err := listDataFileID(poolManager.dirName)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	if len(indexes) <= 2 {
+		// not need to merge
+		return
+	}
 	sort.Ints(indexes)
 
  	compactingMap := make(map[string]*Record)
  	mergeRecords := make([][]*Record, len(indexes) - 1)
+
  	var mgSync sync.Mutex
  	//recordMapChan := make(chan []*Record)
 
