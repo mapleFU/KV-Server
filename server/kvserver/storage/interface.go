@@ -5,7 +5,7 @@
 
 package storage
 
-// Engine is an interface for storage engine like LSM-tree or
+// Engine is an interface for storage backend like LSM-tree or Bitcask
 //
 type Engine interface {
 	// Get the data in

@@ -31,6 +31,7 @@ type BitcaskBufferManager struct {
 
 	opts *options.Options
 	SwitchChan chan struct{}
+	MergeChan chan struct{}
 }
 
 //func (pbm *BitcaskBufferManager) getCurrentFile() *os.File {
@@ -88,6 +89,7 @@ func (pbm *BitcaskBufferManager) fetchFilePointer(fileName string) (*os.File, er
 func (pbm *BitcaskBufferManager) Close() {
 	pbm.closeAllFilePointer()
 	close(pbm.SwitchChan)
+	close(pbm.MergeChan)
 	pbm.currentWriter.Close()
 }
 
@@ -215,6 +217,7 @@ func Open(dirName string, opts *options.Options) (*BitcaskBufferManager, error) 
 		fileLength:fileLength,
 		filePool:make(map[string]*os.File),
 		SwitchChan: make(chan struct{}),
+		MergeChan: make(chan struct{}),
 		opts:opts,
 	}
 

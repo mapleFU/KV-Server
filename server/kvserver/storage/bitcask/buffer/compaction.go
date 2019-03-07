@@ -12,7 +12,7 @@ import (
 // compaction is a function merge the data of every data file
 // it will merge all data file and generate a new hint file
 // return bool that shows if we can do the compaction
-func (poolManager *BitcaskBufferManager) Compaction() (bool, error) {
+func (poolManager *BitcaskBufferManager) Compaction() (map[string]*Record, bool, error) {
 
 	indexes, err := listDataFileID(poolManager.dirName)
 	if err != nil {
@@ -20,7 +20,7 @@ func (poolManager *BitcaskBufferManager) Compaction() (bool, error) {
 	}
 	if len(indexes) <= 2 {
 		// not need to merge
-		return false, nil
+		return nil, false, nil
 	}
 	sort.Ints(indexes)
 
@@ -66,17 +66,5 @@ func (poolManager *BitcaskBufferManager) Compaction() (bool, error) {
 	}
 
 	poolManager.mu.Lock()
-
-	f, err := os.Create(dataFileName(0, poolManager.dirName))
-	var bios int64
-	bios = 0
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, v := range compactingMap {
-		nearestTime := time.Unix(0, int64(v.Header.TimeStamp))
-		bytesData := PersistEncoding(v.Key, v.Value, nearestTime)
-		f.Write(bytesData)
-	}
-	defer poolManager.mu.Unlock()
+	return compactingMap, true, nil
 }
