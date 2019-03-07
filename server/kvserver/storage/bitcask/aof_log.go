@@ -16,7 +16,7 @@ import (
 	"io"
 )
 
-type WalLogHeader struct {
+type AofLogHeader struct {
 	Timestamp uint32
 	KeySize uint32
 	ValueSize uint32
@@ -24,46 +24,38 @@ type WalLogHeader struct {
 	ValuePos uint32
 }
 
-type redoLogger struct {
+type aofLogger struct {
 	dirName string
 	logFile *os.File
 }
 
-func newRedoLogger(dirName string) (*redoLogger, error) {
-	fileName := path.Join(dirName,"log.hint")
+func newRedoLogger(dirName string) (*aofLogger, error) {
+	fileName := path.Join(dirName,"log")
 	var currentFile *os.File
 
-	// TODO: simplify this
-	if _, err := os.Stat(fileName); os.IsNotExist(err) {
-		currentFile, err = os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		currentFile, err = os.Open(fileName)
-		if err != nil {
-			return nil, err
-		}
+	currentFile, err := os.OpenFile(fileName, os.O_CREATE|os.O_APPEND, 0777)
+	if err != nil {
+		return nil, err
 	}
 
-	return &redoLogger{
+	return &aofLogger{
 		dirName:dirName,
 		logFile:currentFile,
 	}, nil
 }
 
-func (redoLogger *redoLogger) writeLog(entry *entry, key string)  {
+func (redoLogger *aofLogger) writeLog(entry *entry, key string)  {
 	bytesData := writeWalLog(entry, key)
 	writeLogToFile(redoLogger.logFile, bytesData)
 }
 
-func (redoLogger *redoLogger) readLog(bios int64) (*entry, string, int, error) {
+func (redoLogger *aofLogger) readLog(bios int64) (*entry, string, int, error) {
 	return readLog(redoLogger.logFile, bios)
 }
 
 func writeWalLog(entry *entry, key string) []byte {
 	keyBytes := []byte(key)
-	walHeader := WalLogHeader{
+	walHeader := AofLogHeader{
 		KeySize:uint32(len(keyBytes)),
 		FileID:entry.FileID,
 		ValuePos:entry.ValuePos,
@@ -102,7 +94,7 @@ type EntryKV struct {
 func readLog(file *os.File, bios int64) (*entry, string, int, error) {
 	var retErr error
 	retErr = nil
-	var walHeader WalLogHeader
+	var walHeader AofLogHeader
 	headerSize := int(unsafe.Sizeof(walHeader))
 	headerBuf := make([]byte, headerSize)
 	file.ReadAt(headerBuf, bios)

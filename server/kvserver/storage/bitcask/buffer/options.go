@@ -10,6 +10,7 @@ import (
 func (bm *BitcaskBufferManager) loadOptions(op *options.Options) error {
 	if op == nil {
 		log.Info("options in loadOptions is nil")
+		op = options.DefaultOption()
 	}
 	// do sync
 	var err error
@@ -23,7 +24,7 @@ func (bm *BitcaskBufferManager) loadOptions(op *options.Options) error {
 	case options.Always:
 
 	case options.Never:
-		break
+
 	case options.Windows:
 
 	}

@@ -28,5 +28,5 @@ func DefaultOption() *Options {
 	// every data should be write to disk
 	option.Sync = NewDefaultSync()
 
-	return nil
+	return &option
 }

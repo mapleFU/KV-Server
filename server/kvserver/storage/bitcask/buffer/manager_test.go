@@ -160,3 +160,4 @@ func TestReadRecords(t *testing.T) {
 	os.Remove("testdata/testAppend/0.data")
 	log.Infoln(len(records))
 }
+

@@ -4,9 +4,10 @@ import (
 	"os"
 	"sync"
 
+	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/options"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/gofrs/flock"
-	"github.com/mapleFU/KV-Server/server/kvserver/storage/bitcask/options"
 )
 
 type BitcaskBufferManager struct {
@@ -28,48 +29,49 @@ type BitcaskBufferManager struct {
 	appendMu sync.Mutex			//the mutex to append data
 	flock *flock.Flock
 
-
+	opts *options.Options
+	SwitchChan chan struct{}
 }
 
-//func (poolManager *BitcaskBufferManager) getCurrentFile() *os.File {
-//	f, err := poolManager.fetchFilePointer(dataFileName(poolManager.CurrentFileId, poolManager.dirName))
+//func (pbm *BitcaskBufferManager) getCurrentFile() *os.File {
+//	f, err := pbm.fetchFilePointer(dataFileName(pbm.CurrentFileId, pbm.dirName))
 //	if err != nil {
 //		log.Fatal(err)
 //	}
 //	return f
 //}
 
-func (poolManager *BitcaskBufferManager) closeFilePointerWithoutLock(fileName string)  {
-	file, exists := poolManager.filePool[fileName]
+func (pbm *BitcaskBufferManager) closeFilePointerWithoutLock(fileName string)  {
+	file, exists := pbm.filePool[fileName]
 	if !exists {
 		return
 	}
 	file.Close()
 }
 
-func (poolManager *BitcaskBufferManager) closeFilePointer(fileName string)  {
-	poolManager.mu.Lock()
-	poolManager.closeFilePointerWithoutLock(fileName)
-	poolManager.mu.Unlock()
+func (pbm *BitcaskBufferManager) closeFilePointer(fileName string)  {
+	pbm.mu.Lock()
+	pbm.closeFilePointerWithoutLock(fileName)
+	pbm.mu.Unlock()
 }
 
-func(poolManager *BitcaskBufferManager) closeAllFilePointer()  {
-	for _, v := range poolManager.filePool {
+func(pbm *BitcaskBufferManager) closeAllFilePointer()  {
+	for _, v := range pbm.filePool {
 		v.Close()
 	}
 }
 
-func (poolManager *BitcaskBufferManager) fetchFilePointer(fileName string) (*os.File, error) {
-	poolManager.mu.RLock()
-	if file, exists := poolManager.filePool[fileName]; exists {
-		defer poolManager.mu.RUnlock()
+func (pbm *BitcaskBufferManager) fetchFilePointer(fileName string) (*os.File, error) {
+	pbm.mu.RLock()
+	if file, exists := pbm.filePool[fileName]; exists {
+		defer pbm.mu.RUnlock()
 		return file, nil
 	} else {
-		poolManager.mu.RUnlock()
-		poolManager.mu.Lock()
+		pbm.mu.RUnlock()
+		pbm.mu.Lock()
 
-		defer poolManager.mu.Unlock()
-		if file, exists := poolManager.filePool[fileName]; exists {
+		defer pbm.mu.Unlock()
+		if file, exists := pbm.filePool[fileName]; exists {
 
 			return file, nil
 		} else {
@@ -83,21 +85,50 @@ func (poolManager *BitcaskBufferManager) fetchFilePointer(fileName string) (*os.
 }
 
 
-func (poolManager *BitcaskBufferManager) Close() {
-	poolManager.closeAllFilePointer()
-	poolManager.currentWriter.Close()
+func (pbm *BitcaskBufferManager) Close() {
+	pbm.closeAllFilePointer()
+	close(pbm.SwitchChan)
+	pbm.currentWriter.Close()
 }
 
-func (*BitcaskBufferManager) switchFile()  {
+// SwitchFile is a function to change current write to another data file, and
+// set current active data file "old"
+// what it actually do is:
+// 1. flush buffer of current writer
+// 2. reset the current file id and name
+// 3. reset current file w length
+// 4. renew a writer for new file
+// finally Close current writer
+func (pbm *BitcaskBufferManager) SwitchFile()  {
+	pbm.mu.Lock()
+	defer pbm.mu.Unlock()
+	err := pbm.currentWriter.Flush()
+	if err != nil {
+		log.Fatal(err)
+	}
+	pbm.currentWriter.Flush()
+	defer pbm.currentWriter.Close()
 
+	pbm.CurrentFileId++
+	pbm.CurrentFileName = dataFileName(pbm.CurrentFileId, pbm.dirName)
+	pbm.fileLength = 0
+
+	pbm.currentWriter, err = newWriter(pbm.opts.Sync, pbm.CurrentFileName)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-// fetch bytes are all read operations, will not effect append.
-func (poolManager *BitcaskBufferManager) FetchBytes(fileId uint32, valueSize uint32, valuePos uint32, timeStamp uint32) ([]byte, error) {
+// FetchBytes are all read operations, will not effect append.
+func (pbm *BitcaskBufferManager) FetchBytes(fileId uint32, valueSize uint32, valuePos uint32, timeStamp uint32) ([]byte, error) {
+	// TODO: maintain the buffer will myself
+	if fileId == uint32(pbm.CurrentFileId) {
+		pbm.currentWriter.Flush()
+	}
 
-	fileName := dataFileName(int(fileId), poolManager.dirName)
+	fileName := dataFileName(int(fileId), pbm.dirName)
 	// maybe i should get from a read pool...
-	file, err := poolManager.fetchFilePointer(fileName)
+	file, err := pbm.fetchFilePointer(fileName)
 	if err != nil {
 		// fileID error, must be...
 		log.Fatal(err)
@@ -114,22 +145,28 @@ func (poolManager *BitcaskBufferManager) FetchBytes(fileId uint32, valueSize uin
 }
 
 
-func (poolManager *BitcaskBufferManager) AppendRecord(data []byte) (uint32, uint32, uint32, uint32, error) {
-	poolManager.appendMu.Lock()
-	defer poolManager.appendMu.Unlock()
+func (pbm *BitcaskBufferManager) AppendRecord(data []byte) (uint32, uint32, uint32, uint32, error) {
+	pbm.appendMu.Lock()
+	defer pbm.appendMu.Unlock()
 	// write data happens here
 
-	n, err := poolManager.currentWriter.Write(data)
+	n, err := pbm.currentWriter.Write(data)
 
-	oldStart := poolManager.fileLength
-	poolManager.fileLength += int64(n)
+	oldStart := pbm.fileLength
+	pbm.fileLength += int64(n)
 
 	if err != nil {
 		log.Infoln("write failed")
 		return 0, 0, 0, 0, err
 	}
 
-	return uint32(poolManager.CurrentFileId), uint32(n), uint32(oldStart), 0, nil
+	if oldStart < int64(pbm.opts.MaxFileSize) && oldStart + int64(n) >=  int64(pbm.opts.MaxFileSize) {
+		go func() {
+			pbm.SwitchChan <- struct{}{}
+		}()
+	}
+
+	return uint32(pbm.CurrentFileId), uint32(n), uint32(oldStart), 0, nil
 }
 
 
@@ -170,16 +207,18 @@ func Open(dirName string, opts *options.Options) (*BitcaskBufferManager, error) 
 
 	fileLength = 0
 
-	poolManager := BitcaskBufferManager{
+	pbm := BitcaskBufferManager{
 		flock:fileLock,
 		CurrentFileId:currentFileId,
 		CurrentFileName:fileName,
 		dirName:dirName,
 		fileLength:fileLength,
 		filePool:make(map[string]*os.File),
+		SwitchChan: make(chan struct{}),
+		opts:opts,
 	}
 
-	poolManager.loadOptions(opts)
+	pbm.loadOptions(opts)
 
-	return &poolManager, nil
+	return &pbm, nil
 }

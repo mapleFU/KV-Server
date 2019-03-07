@@ -9,6 +9,7 @@ import (
 
 	pb "github.com/mapleFU/KV-Server/proto"
 	kv "github.com/mapleFU/KV-Server/server/kvserver"
+	"os"
 )
 
 const (
@@ -26,7 +27,7 @@ func main()  {
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our
 	// protobuf definition.
-
+	os.Mkdir("data", 0777)
 	pb.RegisterKVServicerServer(s, kv.NewKVServiceWithDir("data"))
 
 	// Register reflection service on gRPC server.

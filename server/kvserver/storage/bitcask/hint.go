@@ -20,6 +20,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"path"
+	"fmt"
 )
 
 // hint file name in the system
@@ -47,7 +48,15 @@ func init()  {
 // writeHint is a function called when closing file
 // it backup the keyDir
 func (bitcask *Bitcask) syncKeyDirToHint()  {
-	hintFile, err := os.OpenFile(path.Join(bitcask.directoryName, HintFileName), os.O_TRUNC|os.O_CREATE|os.O_RDWR, HintFilePerm)
+	bitcask.syncKeyDirToFile(HintFileName)
+}
+
+// writeHint is a function called when closing file
+// it backup the keyDir
+// it's not thread safe. so you'd better use this on a map which is immutable
+func (bitcask *Bitcask) syncKeyDirToFile(fileName string)  {
+
+	hintFile, err := os.OpenFile(path.Join(bitcask.directoryName, fileName), os.O_TRUNC|os.O_CREATE|os.O_RDWR, HintFilePerm)
 	if err != nil {
 		// Errors should not happens here
 		log.Fatal(err)
@@ -104,8 +113,38 @@ func (bitcask *Bitcask) loadHint() (bool, error) {
 	return true, nil
 }
 
+func (bitcask *Bitcask) buildHint(dataFileId int, sm *scanMap) error {
+	hintFileName := path.Join(bitcask.directoryName, fmt.Sprintf("%d.hint", dataFileId))
+
+	hintFile, err := os.OpenFile(hintFileName, os.O_TRUNC|os.O_CREATE|os.O_RDWR, HintFilePerm)
+	if err != nil {
+		// Errors should not happens here
+		return err
+	}
+	//var iter types.KIterator
+	iter := sm.iterator()
+
+	for k, v, iter := iter(); iter != nil; k, v, iter = iter() {
+		keyBytes := []byte(string(k.(hashKey)))
+		value := v.(*entry)
+
+		// crc not implemented
+		header := hintHeader{
+			TimeStamp:value.Timestamp,
+			ValuePos:value.ValuePos,
+			KeySz: uint32(len(keyBytes)),
+			ValueSize: value.ValueSize,
+			FileID:value.FileID,
+		}
+		err = appendHintToFile(header, keyBytes, hintFile)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // loadHintFromFile will load the hint in the system
-// TODO: it will well handle EOF.
 func loadHintFromFile(biosBeg int, file *os.File) (key string, entry entry, nRead int, err error) {
 	// read
 	nRead = 0

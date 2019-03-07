@@ -6,11 +6,13 @@ import (
 	"sync"
 
 	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 // compaction is a function merge the data of every data file
 // it will merge all data file and generate a new hint file
-func (poolManager *BitcaskBufferManager) compaction()  {
+// return bool that shows if we can do the compaction
+func (poolManager *BitcaskBufferManager) Compaction() (bool, error) {
 
 	indexes, err := listDataFileID(poolManager.dirName)
 	if err != nil {
@@ -18,7 +20,7 @@ func (poolManager *BitcaskBufferManager) compaction()  {
 	}
 	if len(indexes) <= 2 {
 		// not need to merge
-		return
+		return false, nil
 	}
 	sort.Ints(indexes)
 
@@ -52,27 +54,29 @@ func (poolManager *BitcaskBufferManager) compaction()  {
 	wg.Wait()
 	for _, records := range mergeRecords {
 		for _, v := range records {
-			compactingMap[string(v.Key)] = v
+			if oldData, e := compactingMap[v]; e {
+				if oldData.Header.TimeStamp < v.Header.TimeStamp {
+					compactingMap[string(v.Key)] = v
+				}
+			} else {
+				compactingMap[string(v.Key)] = v
+			}
+
 		}
 	}
 
 	poolManager.mu.Lock()
-	for _, id := range indexes {
-		fileName := dataFileName(id, poolManager.dirName)
-		poolManager.closeFilePointerWithoutLock(fileName)
-		os.Remove(fileName)
+
+	f, err := os.Create(dataFileName(0, poolManager.dirName))
+	var bios int64
+	bios = 0
+	if err != nil {
+		log.Fatal(err)
 	}
-	//f, err := os.Create(dataFileName(0, poolManager.dirName))
-	//var bios int64
-	//bios = 0
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//for _, v := range compactingMap {
-	//	nearestTime := time.Unix(0, int64(v.Header.TimeStamp))
-	//	bytesData := schema.PersistEncoding(v.Key, v.Key, nearestTime)
-	//
-	//}
-	panic("not implemented")
+	for _, v := range compactingMap {
+		nearestTime := time.Unix(0, int64(v.Header.TimeStamp))
+		bytesData := PersistEncoding(v.Key, v.Value, nearestTime)
+		f.Write(bytesData)
+	}
 	defer poolManager.mu.Unlock()
 }

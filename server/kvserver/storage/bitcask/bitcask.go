@@ -29,7 +29,7 @@ type Bitcask struct {
 	entryMap scanMap
 
 	bitcaskPoolManager *buffer.BitcaskBufferManager
-	redoLogger *redoLogger
+	redoLogger *aofLogger
 	// the directory under control
 	directoryName string
 
@@ -40,24 +40,34 @@ func (bitcask *Bitcask) currentFileID() int {
 	return bitcask.bitcaskPoolManager.CurrentFileId
 }
 
-func Open(dirName string, options *options.Options) *Bitcask  {
+func Open(dirName string, opts *options.Options) *Bitcask  {
 	bitcask := Bitcask{}
-
-	bitcask.options = options
+	// if provide nil, use default to do it
+	if opts == nil {
+		opts = options.DefaultOption()
+	}
 
 	bitcask.entryMap = *newScanMap()
 	bitcask.directoryName = dirName
-	bc, err := buffer.Open(dirName, options)
+	bc, err := buffer.Open(dirName, opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 	bitcask.bitcaskPoolManager = bc
+
+	go func() {
+		for range bitcask.bitcaskPoolManager.SwitchChan {
+			// switch current active file
+			bitcask.switchActive()
+		}
+	}()
 
 	logger, err := newRedoLogger(bitcask.directoryName)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	bitcask.redoLogger = logger
+
 
 	return &bitcask
 }
@@ -68,7 +78,7 @@ func (bitcask *Bitcask) Close() {
 }
 
 
-func (bitcask *Bitcask) doWalLog(entry *entry, string string)  {
+func (bitcask *Bitcask) doAofLog(entry *entry, string string)  {
 	if bitcask.options != nil && bitcask.options.UseLog {
 		bitcask.redoLogger.writeLog(entry, string)
 	}
@@ -218,7 +228,7 @@ func (bitcask *Bitcask) Put(key []byte, value []byte) error {
 		ValueSize:valueSz,
 		Timestamp:timeStamp,
 	}
-	bitcask.doWalLog(&entry, string(key))
+	bitcask.doAofLog(&entry, string(key))
 
 	if _, ok := bitcask.entryMap.entry(string(key)); ok {
 		// flush
@@ -247,6 +257,7 @@ func (bitcask *Bitcask) Del(key []byte) error {
 	delEntryBytes := buffer.PersistEncoding(key, delValue, time.Now())
 	fileID, valueSz, valuePos, timeStamp, err := bitcask.bitcaskPoolManager.AppendRecord(delEntryBytes)
 
+
 	if err != nil {
 		// put error
 		return err
@@ -257,7 +268,7 @@ func (bitcask *Bitcask) Del(key []byte) error {
 		ValueSize:valueSz,
 		Timestamp:timeStamp,
 	}
-	bitcask.doWalLog(&entry, string(key))
+	bitcask.doAofLog(&entry, string(key))
 	bitcask.entryMap.deleteRecord(string(key))
 	return nil
 }
