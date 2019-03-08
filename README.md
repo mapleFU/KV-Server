@@ -70,11 +70,11 @@ In this Key/Value server, I only implemented bitcask.
 
 Bitcask is our storage backend. The logic of bitcask is like the following image:
 
-![屏幕快照 2019-03-07 下午2.41.24](/Users/fuasahi/Desktop/屏幕快照 2019-03-07 下午2.41.24.png)
+![屏幕快照 2019-03-07 下午2.41.24](https://nmsl.maplewish.cn/blog:/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/README.md:屏幕快照 2019-03-07 下午2.41.24.png)
 
 It has only one active data file and many older data files. The data will be store in all data files, but the write or delete operations will be only append to active data file. The data model of data file is:
 
- ![屏幕快照 2019-03-07 下午2.45.56](/Users/fuasahi/Desktop/屏幕快照 2019-03-07 下午2.45.56.png)
+ ![屏幕快照 2019-03-07 下午2.45.56](https://nmsl.maplewish.cn/blog:/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/README.md:屏幕快照 2019-03-07 下午2.45.56.png)
 
 In my implement, you can see:
 
@@ -94,7 +94,7 @@ type BitcaskStoreHeader struct {
 
 To find the data in datafile, we keep a `keydir` in memory. When we want to read value from datafile with the key, we can first lookup the `file_id` and the file position in keydir.
 
-![屏幕快照 2019-03-07 下午2.49.42](/Users/fuasahi/Desktop/屏幕快照 2019-03-07 下午2.49.42.png)
+![屏幕快照 2019-03-07 下午2.49.42](https://nmsl.maplewish.cn/blog:/Users/fuasahi/GoglandProjects/src/github.com/mapleFU/KV-Server/README.md:屏幕快照 2019-03-07 下午2.49.42.png)
 
 So, our implement can be design as follows:
 
